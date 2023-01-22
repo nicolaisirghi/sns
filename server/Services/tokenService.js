@@ -1,5 +1,6 @@
 const jwt = require("jsonwebtoken")
-const secretKey = require("../Config/config").JWT_SECRET_KEY
+require("dotenv").config()
+const secretKey = process.env.JWT_SECRET_KEY
 const tokenModel = require("../Models/Tokens")
 class tokenService {
     generateToken(payload) {

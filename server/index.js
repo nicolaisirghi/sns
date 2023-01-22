@@ -1,16 +1,14 @@
 const express = require('express');
+require("dotenv").config()
 const mongoose = require("mongoose");
 const bp = require("body-parser");
 const cors = require("cors")
 const postsRouter = require("./Routes/Posts");
 const authRouter = require("./Routes/Auth")
-const config = require("./Config/config")
 const app = express()
-const PORT = config.PORT || 5000
+const PORT = process.env.PORT || 5000
 app.get('/', (req, res) => {
-    res.status(200).json({
-        message: "Working"
-    })
+    res.status(200).send("Hello everyone")
 })
 app.use(bp.json())
 app.use(bp.urlencoded({extended: true}))
@@ -21,7 +19,7 @@ app.use("/auth",authRouter)
 
 const start = async () => {
     try {
-        await mongoose.connect(config.MongoDB, {
+        await mongoose.connect(process.env.MongoDB, {
             useNewUrlParser: true,
             useUnifiedTopology: true
         })
