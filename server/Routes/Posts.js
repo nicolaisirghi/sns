@@ -1,0 +1,11 @@
+const express = require("express")
+const postsController = require("../Controller/Posts")
+const publicationsController = require("../Controller/Publications")
+const router = express.Router()
+router.get("/", postsController.getCategories)
+router.get("/:category",postsController.getQuestions)
+router.get("/:category/publications",publicationsController.getPublications)
+router.post("/:category/publications/add",publicationsController.addPublication)
+router.post("/:category/add",postsController.addQuestion)
+router.post("/:category/addAnswer",postsController.addAnswer)
+module.exports = router;
