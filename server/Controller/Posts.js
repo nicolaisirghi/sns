@@ -29,7 +29,7 @@ module.exports.getQuestions = async function (req, res) {
     }
 }
 module.exports.addQuestion = async function (req, res) {
-    const questionDocument = {...req.body.question, date: new Date()};
+    const questionDocument = {...req.body.questionInfo, date: new Date()};
     if (!questionDocument) res.status(400).send({
         message: "Error"
     })
@@ -49,11 +49,13 @@ module.exports.addQuestion = async function (req, res) {
 
 }
 module.exports.addAnswer = async function (req, res) {
-    const { answer} = req.body;
+    const { answerInfo} = req.body;
 
-    const questionCandidate = await Questions.findOne({_id:answer.answeredTo});
+    console.log(answerInfo)
+    const questionCandidate = await Questions.findOne({_id:answerInfo.answeredTo});
+    console.log(questionCandidate)
     if (questionCandidate) {
-        const answerDocument = {...answer, date: new Date()};
+        const answerDocument = {...answerInfo, date: new Date()};
         try {
 
             await (new Answers(answerDocument)).save()
@@ -62,6 +64,9 @@ module.exports.addAnswer = async function (req, res) {
         } catch (e) {
             res.status(400).send(e)
         }
+    }
+    else{
+        res.status(404).send("Question not found")
     }
 }
 
