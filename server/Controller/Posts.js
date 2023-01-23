@@ -29,15 +29,12 @@ module.exports.getQuestions = async function (req, res) {
     }
 }
 module.exports.addQuestion = async function (req, res) {
-    const questionDocument = {...req.body.questionInfo, date: new Date()};
-    if (!questionDocument) res.status(400).send({
-        message: "Error"
-    })
-
     try {
+        const questionDocument = {...req.body.questionInfo, date: new Date()};
+        const category = req.params.category;
         const questionFromCollection = await Questions.findOne({question:questionDocument.question})
         if(!questionFromCollection) {
-            await (new Questions(questionDocument)).save();
+            await (new Questions({...questionDocument,category})).save();
             res.status(200).send("Question added with success!")
         }
         else {
