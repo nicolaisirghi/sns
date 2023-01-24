@@ -18,7 +18,7 @@ module.exports.getQuestions = async function (req, res) {
   try {
     const category = req.params.category;
     let page, itemsCount;
-    console.log("Query parameters : ",req.query)
+    console.log("Query parameters : ", req.query)
     if (req.query.page) {
       page = req.query.page;
     } else {
@@ -29,7 +29,7 @@ module.exports.getQuestions = async function (req, res) {
     } else {
       itemsCount = 5;
     }
-    
+
 
     const questions = await Questions.find({ category: category }, { _v: 0 });
     const comments = [];
@@ -45,12 +45,17 @@ module.exports.getQuestions = async function (req, res) {
         userInfo: user,
       });
     }
+
+
+
     const itemsFromCollectionSize = comments.length;
+
     const totalPages = Math.ceil(itemsFromCollectionSize / itemsCount);
+
     let newArr;
-    if (page <= totalPages) { newArr = comments.slice(page - 1, itemsCount); }
-    else if (page>totalPages){
-      newArr = comments.slice(totalPages - 1 , itemsCount)
+    if (page <= totalPages) { newArr = comments.slice((page - 1)*itemsCount, page * itemsCount); }
+    else if (page > totalPages) {
+      newArr = comments.slice((totalPages - 1)*itemsCount)
     }
     res.status(200).json({ newArr, itemsCount: itemsFromCollectionSize });
   } catch (e) {
