@@ -18,7 +18,6 @@ module.exports.getQuestions = async function (req, res) {
   try {
     const category = req.params.category;
     let page, itemsCount;
-    console.log("Query parameters : ", req.query)
     if (req.query.page) {
       page = req.query.page;
     } else {
@@ -57,7 +56,7 @@ module.exports.getQuestions = async function (req, res) {
     else if (page > totalPages) {
       newArr = comments.slice((totalPages - 1)*itemsCount)
     }
-    res.status(200).json({ newArr, itemsCount: itemsFromCollectionSize });
+    res.status(200).json({ comments:newArr, totalItemsCount: itemsFromCollectionSize,itemsCount });
   } catch (e) {
     console.log(e);
     res.status(400).send(e);
