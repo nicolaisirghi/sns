@@ -5,6 +5,7 @@ const bp = require("body-parser");
 const cors = require("cors")
 const postsRouter = require("./Routes/Posts");
 const authRouter = require("./Routes/Auth")
+const accessMiddleware = require("./Middleware/authMiddleware")
 const app = express()
 const PORT = process.env.PORT || 5000
 app.get('/', (req, res) => {
@@ -14,12 +15,11 @@ app.use(bp.json())
 app.use(bp.urlencoded({extended: true}))
 app.use(cors())
 
-app.use("/posts", postsRouter)
+app.use("/posts",accessMiddleware, postsRouter)
 app.use("/auth",authRouter)
-
 const start = async () => {
     try {
-        await mongoose.connect(process.env.MongoDB, {
+        await mongoose.connect(process.env.MONGODB, {
             useNewUrlParser: true,
             useUnifiedTopology: true
         })

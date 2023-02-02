@@ -1,5 +1,6 @@
 const Publications = require("../Models/Publications")
 module.exports.getPublications = async function (req,res){
+    console.log("User from publications : ",req.user)
    const category = req.params.category;
    try{
        const publications = await Publications.find({category})

@@ -16,6 +16,7 @@ module.exports.getCategories = async function (req, res) {
 
 module.exports.getQuestions = async function (req, res) {
   try {
+
     const category = req.params.category;
     let page, itemsCount;
     if (req.query.page) {
@@ -45,18 +46,16 @@ module.exports.getQuestions = async function (req, res) {
       });
     }
 
-
-
     const itemsFromCollectionSize = comments.length;
 
     const totalPages = Math.ceil(itemsFromCollectionSize / itemsCount);
 
     let newArr;
-    if (page <= totalPages) { newArr = comments.slice((page - 1)*itemsCount, page * itemsCount); }
+    if (page <= totalPages) { newArr = comments.slice((page - 1) * itemsCount, page * itemsCount); }
     else if (page > totalPages) {
-      newArr = comments.slice((totalPages - 1)*itemsCount)
+      newArr = comments.slice((totalPages - 1) * itemsCount)
     }
-    res.status(200).json({ comments:newArr, totalItemsCount: itemsFromCollectionSize,itemsCount });
+    res.status(200).json({ comments: newArr, totalItemsCount: itemsFromCollectionSize, itemsCount });
   } catch (e) {
     console.log(e);
     res.status(400).send(e);
@@ -81,12 +80,9 @@ module.exports.addQuestion = async function (req, res) {
 };
 module.exports.addAnswer = async function (req, res) {
   const { answerInfo } = req.body;
-
-  console.log(answerInfo);
   const questionCandidate = await Questions.findOne({
     _id: answerInfo.answeredTo,
   });
-  console.log(questionCandidate);
   if (questionCandidate) {
     const answerDocument = { ...answerInfo, date: new Date() };
     try {
@@ -117,6 +113,76 @@ module.exports.getCommentsByQuestion = async function (req, res) {
       res.status(400).send(questionID);
     }
   } catch (e) {
+    res.status(404).send(e);
+  }
+};
+
+
+module.exports.deleteQuestion = async function (req, res) {
+  try {
+    const questionID = req.params.questionID;
+    if (!questionID) throw new Error("Not question in params")
+    const questionCandidate = await Questions.findOne({ _id: questionID })
+    if (!questionCandidate) throw new Error("Question not found ")
+    if (questionCandidate.user != req.user.id) throw new Error("You don't have permission to remove this question!")
+    await Questions.deleteOne(questionCandidate)
+    res.status(200).send(`The question ${questionCandidate} was deleted`)
+  } catch (e) {
+    console.log(e);
+    res.status(404).send(e);
+  }
+};
+module.exports.deleteAnswer = async function (req, res) {
+  try {
+    const answerID = req.params.answerID;
+    if (!answerID) throw new Error("Not answer in params")
+    const answerCandidate = await Answers.findOne({ _id: answerID })
+    if (!answerCandidate) throw new Error("Answer not found ")
+    if (answerCandidate.user != req.user.id) throw new Error("You don't have permission to remove this answer!")
+    await Answers.deleteOne(answerCandidate)
+    res.status(200).send(`The answer ${answerCandidate} was deleted`)
+  } catch (e) {
+    console.log(e);
+    res.status(404).send(e);
+  }
+};
+
+
+module.exports.changeQuestion = async function (req, res) {
+  try {
+    const questionID = req.params.questionID;
+    if (!questionID) throw new Error("Not question in params")
+    const questionCandidate = await Questions.findOne({ _id: questionID })
+    if (!questionCandidate) throw new Error("Question not found ")
+    if (questionCandidate.user != req.user.id) throw new Error("You don't have permission to modify this question!")
+    const { question, description } = req.body.questionInfo;
+    if (!question || !description) throw new Error("Missing fields for update!")
+    questionCandidate.question = question;
+    questionCandidate.description = description;
+    await questionCandidate.save();
+    res.status(400).send(`Question ${questionCandidate} was updated with success!`)
+
+  } catch (e) {
+    console.log(e);
+    res.status(404).send(e);
+  }
+};
+
+module.exports.changeAnswer = async function (req, res) {
+  try {
+    const answerID = req.params.answerID;
+    if (!answerID) throw new Error("Not answer in params")
+    const answerCandidate = await Answers.findOne({ _id: answerID })
+    if (!answerCandidate) throw new Error("answer not found ")
+    if (answerCandidate.user != req.user.id) throw new Error("You don't have permission to modify this answer!")
+    const { answer } = req.body.answerInfo;
+    if (!answer) throw new Error("Missing fields for update!")
+    answerCandidate.answer = answer;
+    await answerCandidate.save();
+    res.status(400).send(`Answer ${answerCandidate} was updated with success!`)
+
+  } catch (e) {
+    console.log(e);
     res.status(404).send(e);
   }
 };
