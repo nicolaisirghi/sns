@@ -7,6 +7,7 @@ const postsRouter = require("./Routes/Posts");
 const authRouter = require("./Routes/Auth")
 const accessMiddleware = require("./Middleware/authMiddleware")
 const app = express()
+const session = require("express-session")
 const PORT = process.env.PORT || 5000
 app.get('/', (req, res) => {
     res.status(200).send("Hello everyone")
@@ -14,7 +15,7 @@ app.get('/', (req, res) => {
 app.use(bp.json())
 app.use(bp.urlencoded({extended: true}))
 app.use(cors())
-
+app.use(session({ secret: 'keyboard cat', cookie: { maxAge: 60000 }}))
 app.use("/posts",accessMiddleware, postsRouter)
 app.use("/auth",authRouter)
 const start = async () => {
