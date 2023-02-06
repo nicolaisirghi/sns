@@ -1,14 +1,12 @@
 const Questions = require("../Models/Questions");
 const Answers = require("../Models/Answers");
 const Users = require("../Models/Users");
+const Categories = require("../Models/Categories")
 module.exports.getCategories = async function (req, res, next) {
     try {
-        const posts = await Questions.find();
-        const categories = posts.map((el) => el.category);
-        const uniqueCategories = categories.filter(
-            (item, index) => categories.indexOf(item) === index
-        );
-        res.status(200).json({categories: uniqueCategories});
+        const categoriesCollection = await Categories.find()
+        const categories = categoriesCollection.map(el=>el.Category)
+        res.status(200).json({categories});
     } catch (e) {
         next(e);
 
@@ -186,3 +184,19 @@ module.exports.changeAnswer = async function (req, res, next) {
         next(e)
     }
 };
+
+module.exports.createCategories = async function (req,res,next)
+{
+    try{
+        const category = req.body.category;
+        if(!category) throw new Error("Not category in your request !")
+        const categoryCandidate = await Categories.findOne({Category: category})
+        if(categoryCandidate) throw new Error("This category was already created!")
+        const newCategory = await new Categories({Category:category}).save();
+        res.status(200).send(newCategory)
+    }
+    catch (e)
+    {
+        next(e)
+    }
+}
