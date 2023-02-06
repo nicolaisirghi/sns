@@ -16,8 +16,8 @@ const publicationSchema = new Schema({
     file: {
         type: Buffer
     },
-    category:{
-        type:String,required:true
+    category: {
+        type: String, required: true
     },
     date: {
         type: Date,
@@ -26,7 +26,7 @@ const publicationSchema = new Schema({
     user: {
         type: Schema.Types.ObjectId,
         ref: "users",
-        required:true
+        required: true
     }
 }, {versionKey: false})
-module.exports = mongoose.model("publications",publicationSchema)
+module.exports = mongoose.model("publications", publicationSchema)

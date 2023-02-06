@@ -13,6 +13,6 @@ const MailSchema = new Schema(
             type: Boolean,
             default: false
         }
-    },{versionKey:false}
+    }, {versionKey: false}
 )
-module.exports = model("mails",MailSchema);
+module.exports = model("mails", MailSchema);

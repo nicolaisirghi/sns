@@ -2,19 +2,19 @@ const mongoose = require("mongoose")
 const Schema = mongoose.Schema
 const answerSchema = new Schema({
 
-    user:{
+    user: {
         type: Schema.Types.ObjectId,
         ref: "users",
-        required:true
+        required: true
     },
     date: {
-        type:  Date,
+        type: Date,
         required: true
     },
     answeredTo: {
         type: Schema.Types.ObjectId,
         ref: "questions",
-        required:true
+        required: true
     },
 
     answer: {
@@ -26,5 +26,5 @@ const answerSchema = new Schema({
         type: Number,
         default: 0
     }
-},{versionKey:false})
+}, {versionKey: false})
 module.exports = mongoose.model('answers', answerSchema)

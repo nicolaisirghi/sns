@@ -9,9 +9,9 @@ const userSchema = new Schema({
         type: String,
         default: "https://cdn1.iconfinder.com/data/icons/avatars-55/100/avatar_profile_user_music_headphones_shirt_cool-512.png"
     },
-    education:{
-        type:String,
-        required:true
+    education: {
+        type: String,
+        required: true
     },
     email: {
         type: String,

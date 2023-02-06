@@ -2,10 +2,10 @@ const mongoose = require("mongoose")
 const Schema = mongoose.Schema
 const questionSchema = new Schema({
 
-        user:{
+        user: {
             type: Schema.Types.ObjectId,
             ref: "users",
-            required:true
+            required: true
         },
         question: {
             type: String,
@@ -23,7 +23,7 @@ const questionSchema = new Schema({
             type: Date,
             required: true
         }
-    },{versionKey:false}
+    }, {versionKey: false}
 )
 
 module.exports = mongoose.model('questions', questionSchema)

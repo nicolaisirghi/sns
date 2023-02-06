@@ -1,17 +1,15 @@
 const validateToken = require("../Services/tokenService").validateAccessToken
-module.exports = (req,res,next)=>
-{
+module.exports = (req, res, next) => {
     try {
         const authorizationHeader = req.headers.authorization
-        if (!authorizationHeader) throw new Error("Cannot find authorization header")
+        if (!authorizationHeader) res.status(400).send("Cannot find authorization header")
         const accessToken = authorizationHeader.split(' ')[1]
-        if(!accessToken) throw  new Error("Not access token in header ")
+        if (!accessToken) res.status(400).send("Not access token in header")
         const userData = validateToken(accessToken)
-        if (!userData) throw new Error("Wrong token! ")
+        if (!userData) res.status(400).send("Wrong token!")
         req.user = userData;
         next();
-    }
-    catch (e){
+    } catch (e) {
         console.log(e)
     }
 }

@@ -1,8 +1,0 @@
-module.exports = randomChars = (size) => {
-        const dictionary = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-        let word = "";
-        for (let index = 0; index < size; index++) {
-            word += dictionary[Math.floor(Math.random() * dictionary.length)]
-        }
-        return word;
-    }
