@@ -5,18 +5,29 @@ const bp = require("body-parser");
 const cors = require("cors")
 const postsRouter = require("./Routes/Posts");
 const authRouter = require("./Routes/Auth")
+const session = require("express-session")
+const createServer = require("./socketServer")
 const accessMiddleware = require("./Middleware/authMiddleware")
 const app = express()
-const session = require("express-session")
 const errorHandler = require("./Middleware/errorHandlerMiddleware")
 const PORT = process.env.PORT || 5000
+const server = app.listen(PORT, () =>
+console.log(`Server has been started on ${PORT}`));
+
+const io = createServer(server)
+app.use(function(req, res, next) {
+    req.io = io;
+    next();
+});
 app.get('/', (_, res) => {
-    res.status(200).json({
-        name: 'BrainWaveAPI',
-        version: "1.0.0",
-        message: "This is the API for the web-application BrainWave",
-        author: "Sirghi Nicolae",
-    })
+
+    res.sendFile(__dirname + "/index.html")
+    // res.status(200).json({
+    //     name: 'BrainWaveAPI',
+    //     version: "1.0.0",
+    //     message: "This is the API for the web-application BrainWave",
+    //     author: "Sirghi Nicolae",
+    // })
 })
 app.use(bp.json())
 app.use(bp.urlencoded({ extended: true }))
@@ -35,7 +46,6 @@ const start = async () => {
     } catch (e) {
         console.log(e)
     }
-    app.listen(PORT, () =>
-        console.log(`Server has been started on ${PORT}`));
+    // io.on("connection", () => console.log("Connected!"))
 }
 start()
