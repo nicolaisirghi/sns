@@ -1,10 +1,10 @@
-const jwt = require("jsonwebtoken")
-require("dotenv").config()
+import "dotenv/config" 
+import jwt from "jsonwebtoken"
+import tokenModel from "../Models/Tokens.js"
 const accessKey = process.env.JWT_ACCESS_KEY
 const refreshKey = process.env.JWT_REFRESH_KEY
-const tokenModel = require("../Models/Tokens")
-
-class tokenService {
+import { logger } from "../utils/logger.js"
+ class tokenService {
     generateToken(payload) {
         const accesToken = jwt.sign(payload, accessKey, {expiresIn: "15m"})
         const refreshToken = jwt.sign(payload, refreshKey, {expiresIn: "30m"})
@@ -32,14 +32,13 @@ class tokenService {
 
     validateRefreshToken(token) {
         try {
-            console.log("Token is : ", token)
             const userData = jwt.verify(token, process.env.JWT_REFRESH_KEY);
             return userData;
         } catch (e) {
-            console.log(e)
-            return null;
+            logger.error(e)
+            
         }
     }
 }
 
-module.exports = new tokenService()
+export const tokenServiceInstance = new tokenService()

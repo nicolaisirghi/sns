@@ -1,7 +1,7 @@
-const bcrypt = require("bcrypt")
-const Users = require("../Models/Users")
-const tokenService = require("./tokenService")
-
+import bcrypt from 'bcrypt'
+import Users from '../Models/Users.js'
+import { logger } from '../utils/logger.js'
+import { tokenServiceInstance as tokenService } from './tokenService.js'
 class authService {
     async registration(registrationData) {
         const {email, password} = registrationData
@@ -34,7 +34,7 @@ class authService {
             await tokenService.saveToken(userDto.id, tokens.refreshToken);
             return {...tokens, user: userDto}
         } catch (e) {
-            console.log(e)
+        logger.error(e)
         }
     }
 
@@ -56,4 +56,4 @@ class authService {
     }
 }
 
-module.exports = new authService()
+export const authServiceInstance = new authService()

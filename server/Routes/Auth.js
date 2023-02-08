@@ -1,10 +1,9 @@
-const express = require("express")
-const router = express.Router()
-const accessMiddleware = require("../Middleware/authMiddleware")
-const authController = require("../Controller/authController")
+import express from "express"
+import {accessMiddleware} from '../Middleware/accessMiddleware.js'
+import { authControllerInstance as authController } from "../Controller/authController.js"
+export const router = express.Router()
 router.post("/registration", authController.registration)
 router.post("/login", authController.login)
 router.get("/verification/:activationLink", accessMiddleware, authController.activateMail)
 router.get("/getCaptcha", authController.getCaptcha)
 router.post("/verifyCaptcha", authController.verifyCaptcha)
-module.exports = router

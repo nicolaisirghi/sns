@@ -1,5 +1,7 @@
-const validateToken = require("../Services/tokenService").validateAccessToken
-module.exports = (req, res, next) => {
+import {tokenServiceInstance  } from '../Services/tokenService.js'
+import { logger } from '../utils/logger.js'
+const validateToken = tokenServiceInstance.validateAccessToken
+export const accessMiddleware = (req, res, next) => {
     try {
         const authorizationHeader = req.headers.authorization
         if (!authorizationHeader) res.status(400).send("Cannot find authorization header")
@@ -10,6 +12,6 @@ module.exports = (req, res, next) => {
         req.user = userData;
         next();
     } catch (e) {
-        console.log(e)
+        logger.error(e)
     }
 }

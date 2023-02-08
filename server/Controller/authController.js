@@ -1,12 +1,11 @@
-const {v4: uuid} = require("uuid")
-const authService = require("../Services/authService")
-const mailService = require("../Services/mailService")
-const MailsModel = require("../Models/MailActivations")
-const generateCaptcha = require("../Utilities/generateCaptcha")
+import {v4 as uuid} from 'uuid' 
+import { authServiceInstance as authService } from '../Services/authService.js'
+import { MailServiceInstance as mailService } from '../Services/mailService.js'
+import MailsModel from "../Models/MailActivations.js"
+import {generateCaptcha} from '../Utilities/generateCaptcha.js'
 
 class authController {
     constructor() {
-        // this.generateCaptcha = this.generateCaptcha.bind(this)
         this.verifyCaptcha = this.verifyCaptcha.bind(this)
     }
 
@@ -88,4 +87,4 @@ class authController {
     }
 }
 
-module.exports = new authController()
+export const authControllerInstance = new authController()

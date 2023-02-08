@@ -1,4 +1,4 @@
-const mongoose = require("mongoose")
+import mongoose from "mongoose"
 const Schema = mongoose.Schema
 const publicationSchema = new Schema({
     title: {
@@ -29,4 +29,4 @@ const publicationSchema = new Schema({
         required: true
     }
 }, {versionKey: false})
-module.exports = mongoose.model("publications", publicationSchema)
+export default mongoose.model("publications", publicationSchema)
