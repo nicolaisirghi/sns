@@ -200,7 +200,8 @@ import { logger } from "../utils/logger.js"
     }
      async getQuestionByTitle(req,res,next){
         try {
-            const {title} = req.query.questionInfo;
+            console.log(req.query)
+            const {title} = req.query;
             if (!title) throw new Error('Title not found in your request ! ')
             const questionCandidate = await Questions.findOne({question: title})
             if (!questionCandidate) throw new Error(`The question didn't exist `)
