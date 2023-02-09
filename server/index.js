@@ -8,6 +8,7 @@ import { router as postRouter } from './Routes/Posts.js'
 import { router as authRouter } from './Routes/Auth.js'
 import { Server } from 'socket.io'
 import session from 'express-session'
+import morgan from 'morgan'
 import { errorHandler } from './Middleware/errorHandlerMiddleware.js'
 import { logger } from './utils/logger.js'
 import { fileURLToPath } from 'url'
@@ -36,6 +37,7 @@ const start = async () => {
                 logger.error(`🔥: ${socket.id} user just disconnected!`);
             });
         });
+        app.use(morgan('dev'))
         app.use(function (req, _, next) {
             req.io = socketIO;
             next();
