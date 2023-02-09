@@ -12,16 +12,6 @@ export const logger = winston.createLogger(
       printf((info) => `[${info.timestamp}] [${info.level}]: ${info.message}`)
     ),
     transports: [new winston.transports.Console({ format: winston.format.combine(winston.format.colorize())}),
-      new (winston.transports.File)({
-        name: 'info-file',
-        filename: 'filelog-info.log',
-        level: 'info'
-      }),
-      new (winston.transports.File)({
-        name: 'error-file',
-        filename: 'filelog-error.log',
-        level: 'error'
-      })
     ],
   }   
 )

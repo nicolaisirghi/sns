@@ -1,5 +1,5 @@
 import express from "express"
-import {accessMiddleware} from '../Middleware/accessMiddleware.js'
+import { accessMiddleware } from '../Middleware/accessMiddleware.js'
 import { authControllerInstance as authController } from "../Controller/authController.js"
 export const router = express.Router()
 router.post("/registration", authController.registration)

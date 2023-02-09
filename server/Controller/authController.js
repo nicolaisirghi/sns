@@ -2,7 +2,7 @@ import {v4 as uuid} from 'uuid'
 import { authServiceInstance as authService } from '../Services/authService.js'
 import { MailServiceInstance as mailService } from '../Services/mailService.js'
 import MailsModel from "../Models/MailActivations.js"
-import {generateCaptcha} from '../Utilities/generateCaptcha.js'
+import {generateCaptcha} from '../utils/Captcha/generateCaptcha.js'
 
 class authController {
     constructor() {

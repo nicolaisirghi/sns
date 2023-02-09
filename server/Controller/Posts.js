@@ -173,7 +173,7 @@ import { logger } from "../utils/logger.js"
             if (!answerID) throw new Error("Not answer in params")
             const answerCandidate = await Answers.findOne({ _id: answerID })
             if (!answerCandidate) throw new Error("answer not found ")
-            if (answerCandidate.user != req.user.id) throw new Error("You don't have permission to modify this answer!")
+            if (answerCandidate.user !== req.user.id) throw new Error("You don't have permission to modify this answer!")
             const { answer } = req.body.answerInfo;
             if (!answer) throw new Error("Missing fields for update!")
             answerCandidate.answer = answer;
@@ -198,6 +198,18 @@ import { logger } from "../utils/logger.js"
             next(e)
         }
     }
-}
+     async getQuestion(req,res,next){
+        try {
+            const {title} = req.body.questionInfo;
+            if (!title) throw new Error('Title not found in your request ! ')
+            const questionCandidate = await Questions.findOne({question: title})
+            if (!questionCandidate) throw new Error(`The question didn't exist `)
+            return res.status(200).json({questionData: questionCandidate})
+        }
+        catch (e) {
+            next(e)
+        }
+     }
+ }
 
 export const PostsControllerInstance = new PostsController()
