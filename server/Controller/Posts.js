@@ -198,7 +198,7 @@ import { logger } from "../utils/logger.js"
             next(e)
         }
     }
-     async getQuestion(req,res,next){
+     async getQuestionByTitle(req,res,next){
         try {
             const {title} = req.body.questionInfo;
             if (!title) throw new Error('Title not found in your request ! ')

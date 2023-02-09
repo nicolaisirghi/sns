@@ -14,5 +14,6 @@ router.delete("/:category/deleteAnswer/:answerID", postsController.deleteAnswer)
 router.put("/:category/changeQuestion/:questionID", postsController.changeQuestion)
 router.put("/:category/changeAnswer/:answerID", postsController.changeAnswer)
 router.post("/:category/addAnswer", postsController.addAnswer)
+router.get('/:category/getQuestionByTitle',postsController.getQuestionByTitle)
 
 // export const postRouter = router;
