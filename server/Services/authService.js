@@ -1,6 +1,6 @@
 import bcrypt from 'bcrypt'
 import Users from '../Models/Users.js'
-import { logger } from '../utils/logger.js'
+import { logger } from '../utils/Logger/logger.js'
 import { tokenServiceInstance as tokenService } from './tokenService.js'
 class authService {
     async registration(registrationData) {

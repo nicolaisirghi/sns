@@ -1,5 +1,5 @@
 import {tokenServiceInstance  } from '../Services/tokenService.js'
-import { logger } from '../utils/logger.js'
+import { logger } from '../utils/Logger/logger.js'
 const validateToken = tokenServiceInstance.validateAccessToken
 export const accessMiddleware = (req, res, next) => {
     try {

@@ -2,7 +2,7 @@ import Questions from "../Models/Questions.js"
 import Answers from "../Models/Answers.js"
 import Users from "../Models/Users.js"
 import Categories from "../Models/Categories.js"
-import { logger } from "../utils/logger.js"
+import { logger } from "../utils/Logger/logger.js"
  class PostsController {
     getCategories = async function (req, res, next) {
         try {

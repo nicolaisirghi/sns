@@ -3,7 +3,7 @@ import jwt from "jsonwebtoken"
 import tokenModel from "../Models/Tokens.js"
 const accessKey = process.env.JWT_ACCESS_KEY
 const refreshKey = process.env.JWT_REFRESH_KEY
-import { logger } from "../utils/logger.js"
+import { logger } from "../utils/Logger/logger.js"
  class tokenService {
     generateToken(payload) {
         const accesToken = jwt.sign(payload, accessKey, {expiresIn: "15m"})
