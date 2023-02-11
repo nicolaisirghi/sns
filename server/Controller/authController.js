@@ -42,8 +42,7 @@ class authController {
                     return {
                         err,
                         code: 401,
-                        captcha,
-                        imgData
+                        captcha:imgData
                     }
                 }
             } else {
