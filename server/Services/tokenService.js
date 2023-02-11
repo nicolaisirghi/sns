@@ -35,7 +35,7 @@ import { logger } from "../utils/Logger/logger.js"
             const userData = jwt.verify(token, process.env.JWT_REFRESH_KEY);
             return userData;
         } catch (e) {
-            logger.error(e)
+            return null
             
         }
     }

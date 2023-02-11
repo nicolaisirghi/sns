@@ -12,7 +12,6 @@ import morgan from 'morgan'
 import { errorHandler } from './Middleware/errorHandlerMiddleware.js'
 import { logger } from './utils/Logger/logger.js'
 import { fileURLToPath } from 'url'
-import {captchaMiddleware} from "./Middleware/captchaMiddleware.js";
 const app = express()
 const PORT = process.env.PORT || 5000
 
@@ -59,7 +58,7 @@ const start = async () => {
             cookie: { maxAge: 1000*60*60*24 },
             saveUninitialized: true
         }))
-        app.use(captchaMiddleware)
+        // app.use(captchaMiddleware)
         app.use("/posts", postRouter)
         app.use("/auth", authRouter)
         app.use(errorHandler)
