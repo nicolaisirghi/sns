@@ -15,9 +15,8 @@ class authController {
     }
 
     getCaptcha(req, res) {
-
         if (!req.session.captchaCounter) {
-            req.session.captchaCounter = 1;
+             req.session.captchaCounter = 1;
         } else {
             if (req.session.captchaCounter === 3) {
                 let isCaptchaVerified;
@@ -118,6 +117,7 @@ class authController {
                 return res.json(userData)
             } else {
                 const response = this.getCaptcha(req, res)
+
                 if (response.code === 200) {
                     return res.json(userData)
                 }
@@ -125,9 +125,10 @@ class authController {
             }
 
         } catch (err) {
-            console.log("Res session captcha counter : ", req.session.captchaCounter)
             req.error = err;
             const resInfo = this.getCaptcha(req, res)
+            console.log("Req session captchaCounter after function :",req.session.captchaCounter)
+
             if (!resInfo) next(err);
             else {
                 res.status(resInfo.code).json({resInfo})

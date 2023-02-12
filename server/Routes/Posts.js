@@ -1,11 +1,11 @@
 import express from "express"
-import { PostsControllerInstance as postsController } from "../Controller/Posts.js"
-import { PublicationsControllerInstance as publicationsController } from "../Controller/Publications.js"
+import { PostsControllerInstance as postsController } from "../Controller/postController.js"
+import { PublicationsControllerInstance as publicationsController } from "../Controller/publicationController.js"
 
 export const router = express.Router()
 router.post("/", postsController.createCategories)
 router.get("/", postsController.getCategories)
-router.get("/:category", postsController.getQuestions)
+router.get("/:category", postsController.getComments)
 router.get("/:category/publications", publicationsController.getPublications)
 router.post("/:category/publications/addPublication", publicationsController.addPublication)
 router.post("/:category/addQuestion", postsController.addQuestion)

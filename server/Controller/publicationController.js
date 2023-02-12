@@ -14,7 +14,8 @@ import Publications from "../Models/Publications.js";
         const publication = {...req.body.publication, category: req.params.category, date: new Date()};
         try {
             await new Publications(publication).save();
-            res.status(200).json({message: "Succes"})
+
+            res.status(200).json({message: "Success"})
         } catch (e) {
             res.status(400).json({error: e})
         }

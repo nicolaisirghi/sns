@@ -6,6 +6,7 @@ import cors from 'cors'
 import path, { dirname } from 'path'
 import { router as postRouter } from './Routes/Posts.js'
 import { router as authRouter } from './Routes/Auth.js'
+import {router as messageRouter} from "./Routes/Messages.js"
 import { Server } from 'socket.io'
 import session from 'express-session'
 import morgan from 'morgan'
@@ -31,10 +32,15 @@ const start = async () => {
                 origin: "http://localhost:3000"
             }
         });
+
         socketIO.on('connection', (socket) => {
-            logger.silly(`⚡: ${socket.id} user just connected!`);
+            socket.onAny((event, ...args) => {
+                console.log("Data from client : ")
+                console.log(event, args);
+            });
+            logger.info(`⚡: ${socket.id} user just connected!`);
             socket.on('disconnect', () => {
-                logger.error(`🔥: ${socket.id} user just disconnected!`);
+                logger.info(`🔥: ${socket.id} user just disconnected!`);
             });
         });
         app.use(morgan('dev'))
@@ -52,15 +58,24 @@ const start = async () => {
         })
         app.use(bp.json())
         app.use(bp.urlencoded({ extended: true }))
-        app.use(cors())
+        app.use(cors({
+            // credentials: true,
+            origin: "http://localhost:3000",
+        }));
         app.use(session({
             secret: 'keyboard cat', resave: false,
             cookie: { maxAge: 1000*60*60*24 },
             saveUninitialized: true
         }))
-        // app.use(captchaMiddleware)
+        app.use(function (req,_,next)
+        {
+            req.user = "63e3f6889d700f51fe8531b7";
+            console.log("User: ",req.user)
+            next()
+        })
         app.use("/posts", postRouter)
         app.use("/auth", authRouter)
+        app.use("/messages",messageRouter)
         app.use(errorHandler)
     } catch (e) {
         logger.error(e)
