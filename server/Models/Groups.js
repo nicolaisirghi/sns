@@ -18,7 +18,7 @@ const GroupSchema = new Schema({
     type:
     {
         type: String,
-        enum: ['public','private'],
+        enum: ['public', 'private'],
         required: true
     },
     creator: {
@@ -28,6 +28,11 @@ const GroupSchema = new Schema({
     participants: [
         {
             type: Schema.Types.ObjectId,
+            role: {
+                type: String,
+                enum: ['user', 'admin'],
+                required: true
+            },
             ref: "users"
         }
     ],

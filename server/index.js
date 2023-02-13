@@ -6,8 +6,8 @@ import cors from 'cors'
 import path, { dirname } from 'path'
 import { router as postRouter } from './Routes/Posts.js'
 import { router as authRouter } from './Routes/Auth.js'
-import {router as messageRouter} from "./Routes/Messages.js"
-import {router as groupRouter} from "./Routes/Groups.js"
+import { router as messageRouter } from "./Routes/Messages.js"
+import { router as groupRouter } from "./Routes/Groups.js"
 import { Server } from 'socket.io'
 import session from 'express-session'
 import morgan from 'morgan'
@@ -16,10 +16,15 @@ import { logger } from './utils/Logger/logger.js'
 import { fileURLToPath } from 'url'
 const app = express()
 const PORT = process.env.PORT || 5000
-
+const sessionMiddleware = session({
+    secret: 'keyboard cat', resave: false,
+    cookie: { maxAge: 1000 * 60 * 60 * 24 },
+    saveUninitialized: true,
+    socketClients: {}
+})
 const start = async () => {
     try {
-        
+
         app.use(morgan('dev'))
         app.use(function (req, _, next) {
             req.io = socketIO;
@@ -31,7 +36,7 @@ const start = async () => {
             const options = {
                 root: path.join(__dirname)
             };
-            res.sendFile('index.html',options)
+            res.sendFile('index.html', options)
         })
         app.use(bp.json())
         app.use(bp.urlencoded({ extended: true }))
@@ -39,22 +44,16 @@ const start = async () => {
             credentials: true,
             origin: "http://localhost:3000",
         }));
-        app.use(session({
-            secret: 'keyboard cat', resave: false,
-            cookie: { maxAge: 1000*60*60*24 },
-            saveUninitialized: true
-        }))
-        app.use(function (req,_,next)
-        {
+        app.use(sessionMiddleware)
+        app.use(function (req, _, next) {
             req.user = "63e3f6889d700f51fe8531b7";
-            console.log("User: ",req.user)
+            console.log("User: ", req.user)
             next()
         })
         app.use("/posts", postRouter)
         app.use("/auth", authRouter)
-        app.use("/messages",messageRouter)
-        app.use("/groups",groupRouter)
-        // app.use(proxy('http://localhost:3000'));
+        app.use("/messages", messageRouter)
+        app.use("/groups", groupRouter)
         app.use(errorHandler)
         const server = app.listen(PORT, () =>
             logger.info((`[Express] Server has been started on ${PORT}`)));
@@ -67,11 +66,23 @@ const start = async () => {
         logger.info("[Mongo] Connected to mongo ")
         const socketIO = new Server(server, {
             cors: {
-                origin: "http://localhost:3000"
+                origin: "http://localhost:3000",credentials:true
             }
         });
 
+        socketIO.use((socket, next) => {
+            sessionMiddleware(socket.request, {}, next);
+        });
         socketIO.on('connection', (socket) => {
+            const currentUser = socket.handshake.query.name;
+
+            if (!socket.request.session.socketClients) {
+                socket.request.session.socketClients
+            }
+            else {
+                socket.request.session.socketClients[currentUser] = socket.id
+            }
+            console.log("Session : ", socket.request.session);
             socket.onAny((event, ...args) => {
                 console.log("Data from client : ")
                 console.log(event, args);
