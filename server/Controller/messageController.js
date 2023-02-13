@@ -1,4 +1,4 @@
-import Messages from "../Models/Messages.js";
+import Messages from "../Models/SimpleMessages.js";
 import Users from "../Models/Users.js";
 
 class messageController {
