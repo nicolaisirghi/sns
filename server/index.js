@@ -14,7 +14,10 @@ import morgan from 'morgan'
 import { errorHandler } from './Middleware/errorHandlerMiddleware.js'
 import { logger } from './utils/Logger/logger.js'
 import { fileURLToPath } from 'url'
+import Users from "./Models/Users.js";
 const app = express()
+
+
 const PORT = process.env.PORT || 5000
 const sessionMiddleware = session({
     secret: 'keyboard cat', resave: false,
@@ -64,6 +67,11 @@ const start = async () => {
             useUnifiedTopology: true
         })
         logger.info("[Mongo] Connected to mongo ")
+        const users = await Users.find();
+        const usersID = users.map(user=>[user.id,null])
+        const usersOnline =  Object.fromEntries(usersID)
+        //global variables
+        global.usersOnline = usersOnline;
         const socketIO = new Server(server, {
             cors: {
                 origin: "http://localhost:3000",credentials:true
@@ -74,21 +82,16 @@ const start = async () => {
             sessionMiddleware(socket.request, {}, next);
         });
         socketIO.on('connection', (socket) => {
-            const currentUser = socket.handshake.query.name;
-
-            if (!socket.request.session.socketClients) {
-                socket.request.session.socketClients
-            }
-            else {
-                socket.request.session.socketClients[currentUser] = socket.id
-            }
-            console.log("Session : ", socket.request.session);
+            //need to be fixes
+            const {id} = socket.handshake.query
+            usersOnline[id] = socket.id;
             socket.onAny((event, ...args) => {
                 console.log("Data from client : ")
                 console.log(event, args);
             });
             logger.info(`⚡: ${socket.id} user just connected!`);
             socket.on('disconnect', () => {
+                usersOnline[id] = null;
                 logger.info(`🔥: ${socket.id} user just disconnected!`);
             });
         });
