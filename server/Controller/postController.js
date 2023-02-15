@@ -1,8 +1,8 @@
 import Questions from "../Models/Questions.js"
 import Answers from "../Models/Answers.js"
 import Categories from "../Models/Categories.js"
-import {logger} from "../utils/Logger/logger.js"
-import {getComments} from "../utils/getDataFromModels/Posts.js";
+import {logger} from "../Utils/Logger/logger.js"
+import {getComments} from "../Utils/getDataFromModels/Posts.js";
 
 class PostsController {
     getCategories = async function (req, res, next) {
@@ -95,7 +95,7 @@ class PostsController {
             if (!questionID) throw new Error("Not question in params")
             const questionCandidate = await Questions.findOne({_id: questionID})
             if (!questionCandidate) throw new Error("Question not found ")
-            if (questionCandidate.user != req.user.id) throw new Error("You don't have permission to remove this question!")
+            // if (questionCandidate.user != req.user.id) throw new Error("You don't have permission to remove this question!")
             await Questions.deleteOne(questionCandidate)
             res.status(200).send(`The question ${questionCandidate} was deleted`)
         } catch (e) {
@@ -109,7 +109,7 @@ class PostsController {
             if (!answerID) throw new Error("Not answer in params")
             const answerCandidate = await Answers.findOne({_id: answerID})
             if (!answerCandidate) throw new Error("Answer not found ")
-            if (answerCandidate.user != req.user.id) throw new Error("You don't have permission to remove this answer!")
+            // if (answerCandidate.user != req.user.id) throw new Error("You don't have permission to remove this answer!")
             await Answers.deleteOne(answerCandidate)
             res.status(200).send(`The answer ${answerCandidate} was deleted`)
         } catch (e) {
@@ -124,7 +124,7 @@ class PostsController {
             if (!questionID) throw new Error("Not question in params")
             const questionCandidate = await Questions.findOne({_id: questionID})
             if (!questionCandidate) throw new Error("Question not found ")
-            if (questionCandidate.user != req.user.id) throw new Error("You don't have permission to modify this question!")
+            // if (questionCandidate.user != req.user.id) throw new Error("You don't have permission to modify this question!")
             const {question, description} = req.body.questionInfo;
             if (!question || !description) throw new Error("Missing fields for update!")
             questionCandidate.question = question;
@@ -143,7 +143,7 @@ class PostsController {
             if (!answerID) throw new Error("Not answer in params")
             const answerCandidate = await Answers.findOne({_id: answerID})
             if (!answerCandidate) throw new Error("answer not found ")
-            if (answerCandidate.user !== req.user.id) throw new Error("You don't have permission to modify this answer!")
+            // if (answerCandidate.user !== req.user.id) throw new Error("You don't have permission to modify this answer!")
             const {answer} = req.body.answerInfo;
             if (!answer) throw new Error("Missing fields for update!")
             answerCandidate.answer = answer;

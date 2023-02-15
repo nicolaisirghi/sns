@@ -1,4 +1,4 @@
-import { logger } from "../utils/Logger/logger.js"
+import { logger } from "../Utils/Logger/logger.js"
 export const errorHandler = (err, req, res, _) => {
     logger.error(`An error happened  : ${err} `)
     logger.silly("Errors : ",err)

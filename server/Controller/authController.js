@@ -3,7 +3,7 @@ import {authServiceInstance as authService} from '../Services/authService.js'
 import {MailServiceInstance as mailService} from '../Services/mailService.js'
 import {tokenServiceInstance as tokenService} from "../Services/tokenService.js";
 import MailsModel from "../Models/MailActivations.js"
-import {generateCaptcha} from '../utils/Captcha/generateCaptcha.js'
+import {generateCaptcha} from '../Utils/Captcha/generateCaptcha.js'
 import Tokens from "../Models/Tokens.js";
 import users from "../Models/Users.js";
 
