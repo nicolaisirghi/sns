@@ -6,7 +6,7 @@ const refreshKey = process.env.JWT_REFRESH_KEY
 import { logger } from "../Utils/Logger/logger.js"
  class tokenService {
     generateToken(payload) {
-        const accesToken = jwt.sign(payload, accessKey, {expiresIn: "15m"})
+        const accesToken = jwt.sign(payload, accessKey, {expiresIn: "1m"})
         const refreshToken = jwt.sign(payload, refreshKey, {expiresIn: "30m"})
         return {accesToken, refreshToken}
     }

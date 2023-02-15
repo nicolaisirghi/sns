@@ -8,6 +8,7 @@ import path, { dirname } from 'path'
 import { fileURLToPath } from 'url'
 import { errorHandler } from './errorHandlerMiddleware.js'
 import { router } from "../Routes/index.js"
+import {accessMiddleware} from "./accessMiddleware.js";
 export const app = express()
 
 export const sessionMiddleware = session({
@@ -19,6 +20,7 @@ export const sessionMiddleware = session({
 
 
         app.use(morgan('dev'))
+
         // app.use(function (req, _, next) {
         //     req.io = socketIO;
         //     next();
