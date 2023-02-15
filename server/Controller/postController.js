@@ -170,12 +170,13 @@ class PostsController {
 
     async getQuestionByTitle(req, res, next) {
         try {
-            console.log(req.query)
             const {title} = req.query;
             if (!title) throw new Error('Title not found in your request ! ')
-            const questionCandidate = await Questions.findOne({question: title})
+            const question = title.replace(/_/g,' ').trim()
+            const questionCandidate = await Questions.findOne({question})
             if (!questionCandidate) throw new Error(`The question didn't exist `)
-            return res.status(200).json({questionData: questionCandidate})
+            const responeInfo = await Answers.find({answeredTo:questionCandidate._id})
+            return res.status(200).json({questionInfo: questionCandidate,responeInfo})
         } catch (e) {
             next(e)
         }
