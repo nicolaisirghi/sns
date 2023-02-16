@@ -1,6 +1,7 @@
 import bcrypt from 'bcrypt'
 import Users from '../Models/Users.js'
 import { logger } from '../Utils/Logger/logger.js'
+import { getToken } from '../Utils/Token/getToken.js'
 import { tokenServiceInstance as tokenService } from './tokenService.js'
 class authService {
     async registration(registrationData) {
@@ -13,29 +14,20 @@ class authService {
         const hashPassword = await bcrypt.hash(password, 2)
         const payload = {...registrationData, password: hashPassword}
         const user = await new Users(payload).save();
-        const userDto = {id: user._id, email: user.email}
-        const tokens = tokenService.generateToken({...userDto})
-        await tokenService.saveToken(userDto.id, tokens.refreshToken);
-        return {...tokens, user: userDto}
-
+        const data = await getToken(user)
+        return data
 
     }
 
     async refresh(refreshToken) {
-        try {
             const userData = tokenService.validateRefreshToken(refreshToken);
-            const tokenFromDb = await tokenService.findToken(refreshToken);
-            if (!userData || !tokenFromDb) {
+            const tokenCandidate = await tokenService.findToken(refreshToken);
+            if (!userData || !tokenCandidate) {
                 throw new Error("Not token")
             }
             const user = await Users.findById(userData.id);
-            const userDto = {id: user._id, email: user.email}
-            const tokens = tokenService.generateToken({...userDto});
-            await tokenService.saveToken(userDto.id, tokens.refreshToken);
-            return {...tokens, user: userDto}
-        } catch (e) {
-        logger.error(e)
-        }
+            const data = await getToken(user)
+            return data
     }
 
     async login(email, password) {
@@ -43,16 +35,12 @@ class authService {
         if (!user) {
             throw new Error(`User with this data didn't exist`)
         }
-
         const isPasswordEquals = await bcrypt.compare(password, user.password)
         if (!isPasswordEquals) {
             throw new Error( `User with this data didn't exist`)
         }
-        const userDto = {id: user._id, email: user.email}
-        const tokens = tokenService.generateToken({...userDto})
-        await tokenService.saveToken(userDto.id, tokens.refreshToken);
-        return {...tokens, user: userDto}
-
+        const data = await getToken(user)
+        return data
     }
 }
 

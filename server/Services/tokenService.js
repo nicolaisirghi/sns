@@ -3,12 +3,11 @@ import jwt from "jsonwebtoken"
 import tokenModel from "../Models/Tokens.js"
 const accessKey = process.env.JWT_ACCESS_KEY
 const refreshKey = process.env.JWT_REFRESH_KEY
-import { logger } from "../Utils/Logger/logger.js"
  class tokenService {
     generateToken(payload) {
-        const accesToken = jwt.sign(payload, accessKey, {expiresIn: "5d"})
+        const accessToken = jwt.sign(payload, accessKey, {expiresIn: "1m"})
         const refreshToken = jwt.sign(payload, refreshKey, {expiresIn: "30m"})
-        return {accesToken, refreshToken}
+        return {accessToken, refreshToken}
     }
 
     async saveToken(userID, refreshToken) {

@@ -70,6 +70,7 @@ class authController {
             await new MailsModel({user: userData.user.id, link: accessLink}).save()
             res.cookie('refreshToken', userData.refreshToken, {maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true})
             req.session.refreshToken = userData.refreshToken
+
             return res.json(userData)
         } catch (e) {
             next(e)
