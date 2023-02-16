@@ -3,6 +3,7 @@ import Users from '../Models/Users.js'
 import { logger } from '../Utils/Logger/logger.js'
 import { getToken } from '../Utils/Token/getToken.js'
 import { tokenServiceInstance as tokenService } from './tokenService.js'
+import tokens from "../Models/Tokens.js";
 class authService {
     async registration(registrationData) {
         const {email, password} = registrationData
@@ -21,7 +22,7 @@ class authService {
 
     async refresh(refreshToken) {
             const userData = tokenService.validateRefreshToken(refreshToken);
-            const tokenCandidate = await tokenService.findToken(refreshToken);
+            const tokenCandidate = await tokens.findOne({refreshToken});
             if (!userData || !tokenCandidate) {
                 throw new Error("Not token")
             }

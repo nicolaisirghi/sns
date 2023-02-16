@@ -5,7 +5,7 @@ const accessKey = process.env.JWT_ACCESS_KEY
 const refreshKey = process.env.JWT_REFRESH_KEY
  class tokenService {
     generateToken(payload) {
-        const accessToken = jwt.sign(payload, accessKey, {expiresIn: "1m"})
+        const accessToken = jwt.sign(payload, accessKey, {expiresIn: "1000y"})
         const refreshToken = jwt.sign(payload, refreshKey, {expiresIn: "30m"})
         return {accessToken, refreshToken}
     }

@@ -40,10 +40,10 @@ export const sessionMiddleware = session({
             origin: "http://localhost:3000",
         }));
         app.use(sessionMiddleware)
-        app.use(function (req, _, next) {
-            req.user = "63e3f6889d700f51fe8531b7";
-            console.log("User: ", req.user)
-            next()
-        })
+        // app.use(function (req, _, next) {
+        //     req.user = "63e3f6889d700f51fe8531b7";
+        //     console.log("User: ", req.user)
+        //     next()
+        // })
         app.use(router)
         app.use(errorHandler)

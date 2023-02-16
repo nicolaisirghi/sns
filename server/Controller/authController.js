@@ -68,7 +68,6 @@ class authController {
             const verificationURL = `${process.env.API_URL}/verification/${accessLink}`
             await mailService.sendActivationMail(userData.user.email, verificationURL);
             await new MailsModel({user: userData.user.id, link: accessLink}).save()
-            res.cookie('refreshToken', userData.refreshToken, {maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true})
             req.session.refreshToken = userData.refreshToken
 
             return res.json(userData)
@@ -92,6 +91,18 @@ class authController {
             next(e);
         }
     }
+    async refresh(req,res,next){
+        try{
+            const {refreshToken} = req.session;
+            if(!refreshToken) throw new Error("Not refresh token in session !")
+            const token = await authService.refresh(refreshToken)
+            res.status(200).json(
+                token
+            )
+        }catch(e){
+            next(e)
+        }
+    }
     async logout(req,res,next){
         try{
             await Tokens.remove({refreshToken : req.session.refreshToken})
@@ -113,7 +124,6 @@ class authController {
             const {email, password} = req.body
             const userData = await authService.login(email, password)
             if (userData && !req.session.captcha && req.session.captchaCounter !== 3) {
-                res.cookie('refreshToken', userData.refreshToken, {maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true})
                 req.session.refreshToken = userData.refreshToken
                 return res.json(userData)
             } else {
