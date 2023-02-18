@@ -78,9 +78,10 @@ class authController {
     async getMe(req,res,next)
     {
         try{
-            const refreshToken = req.session.refreshToken;
-            if(!refreshToken) throw new Error("You are not logged !")
-            const userData = tokenService.validateRefreshToken(refreshToken)
+            const accessToken= req.session.accessToken;
+            console.log(accessToken)
+            if(!accessToken) throw new Error("You are not logged !")
+            const userData = tokenService.validateAccessToken(accessToken)
             const userCandidate = await users.find({
                 email: userData.email
             },{password: 0})

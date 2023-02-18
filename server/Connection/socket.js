@@ -15,6 +15,7 @@ export const createSocketConnection = (server)=>
     });
     socketIO.on('connection', (socket) => {
         //need to be fixes
+        // global.socket = socket;
         const {id} = socket.handshake.query
         usersOnline[id] = socket.id;
         socket.onAny((event, ...args) => {

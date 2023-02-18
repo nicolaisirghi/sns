@@ -16,7 +16,7 @@ const start = async () => {
         })
         logger.info("[Mongo] Connected to mongo ")
         global.usersOnline = await checkUsersOnline()
-        const socketIO = createSocketConnection(server)
+        global.socketIO = createSocketConnection(server)
     } catch (e) {
         logger.error(e)
     }

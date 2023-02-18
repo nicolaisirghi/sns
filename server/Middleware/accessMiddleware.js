@@ -21,6 +21,7 @@ export const accessMiddleware = async (req, res, next) => {
             throw new Error("Wrong token!")
         }
         req.user = userData.id;
+        req.session.accessToken = accessToken;
         next();
     } catch (e) {
         next(e)

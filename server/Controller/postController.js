@@ -1,22 +1,16 @@
 import Questions from "../Models/Questions.js"
 import Answers from "../Models/Answers.js"
 import Categories from "../Models/Categories.js"
-import {logger} from "../Utils/Logger/logger.js"
 import {getComments} from "../Utils/getDataFromModels/Posts.js";
 
 class PostsController {
     getCategories = async function (req, res, next) {
         try {
-            if (!req.session.counter) req.session.counter = 0
-            console.log("Req session counter : ", req.session.counter)
-            req.session.counter++;
             const categoriesCollection = await Categories.find()
             const categories = categoriesCollection.map(el => el.Category)
             res.status(200).json({categories});
         } catch (e) {
-            logger.error(e);
             next(e);
-
         }
     };
 
@@ -41,7 +35,7 @@ class PostsController {
             if (!questionFromCollection) {
                  await new Questions({...questionDocument, category}).save();
                  const newComments = await getComments(category);
-                req.io.emit("new question", newComments)
+                socketIO.emit("new question", newComments)
                 res.status(200).send("Question added with success!");
             } else {
                 throw new Error("This question is already asked!");
@@ -61,7 +55,7 @@ class PostsController {
                 const answerDocument = {...answerInfo, date: new Date()};
                  await new Answers(answerDocument).save();
                 const newComments = await getComments(questionCandidate.category);
-                req.io.emit("new answer", newComments)
+                socketIO.emit("new answer", newComments)
                 res.status(200).send(`Answered to question ${questionCandidate.question} with success!`);
 
             } else {
@@ -95,7 +89,7 @@ class PostsController {
             if (!questionID) throw new Error("Not question in params")
             const questionCandidate = await Questions.findOne({_id: questionID})
             if (!questionCandidate) throw new Error("Question not found ")
-            // if (questionCandidate.user != req.user.id) throw new Error("You don't have permission to remove this question!")
+            if (questionCandidate.user != req.user.id) throw new Error("You don't have permission to remove this question!")
             await Questions.deleteOne(questionCandidate)
             res.status(200).send(`The question ${questionCandidate} was deleted`)
         } catch (e) {
@@ -109,7 +103,7 @@ class PostsController {
             if (!answerID) throw new Error("Not answer in params")
             const answerCandidate = await Answers.findOne({_id: answerID})
             if (!answerCandidate) throw new Error("Answer not found ")
-            // if (answerCandidate.user != req.user.id) throw new Error("You don't have permission to remove this answer!")
+            if (answerCandidate.user != req.user.id) throw new Error("You don't have permission to remove this answer!")
             await Answers.deleteOne(answerCandidate)
             res.status(200).send(`The answer ${answerCandidate} was deleted`)
         } catch (e) {
@@ -124,14 +118,13 @@ class PostsController {
             if (!questionID) throw new Error("Not question in params")
             const questionCandidate = await Questions.findOne({_id: questionID})
             if (!questionCandidate) throw new Error("Question not found ")
-            // if (questionCandidate.user != req.user.id) throw new Error("You don't have permission to modify this question!")
+            if (questionCandidate.user != req.user.id) throw new Error("You don't have permission to modify this question!")
             const {question, description} = req.body.questionInfo;
             if (!question || !description) throw new Error("Missing fields for update!")
             questionCandidate.question = question;
             questionCandidate.description = description;
             await questionCandidate.save();
             res.status(400).send(`Question ${questionCandidate} was updated with success!`)
-
         } catch (e) {
             next(e)
         }

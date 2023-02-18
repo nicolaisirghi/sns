@@ -67,8 +67,7 @@ class GroupController {
             if (!newParticipant) throw new Error('Please add a participant!')
             const isParticipantInGroup = participants.includes(newParticipant)
             if (isParticipantInGroup) throw new Error('The user already is in group !')
-            console.log('NicolaiS54: ', usersOnline['NicolaiS54'])
-            req.io.to(usersOnline['NicolaiS54']).emit("addUserRequest", {message: "Became part of our group !"})
+            // req.io.to(usersOnline['NicolaiS54']).emit("addUserRequest", {message: "Became part of our group !"})
             res.status(200).json({
                 status: 'Success'
             })

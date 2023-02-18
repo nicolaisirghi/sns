@@ -2,7 +2,7 @@ import express from "express"
 import { PostsControllerInstance as postsController } from "../Controller/postController.js"
 import { PublicationsControllerInstance as publicationsController } from "../Controller/publicationController.js"
 
-export const router = express.Router()
+ const router = express.Router()
 router.post("/", postsController.createCategories)
 router.get("/", postsController.getCategories)
 router.get("/:category", postsController.getComments)
@@ -15,3 +15,4 @@ router.put("/:category/changeQuestion/:questionID", postsController.changeQuesti
 router.put("/:category/changeAnswer/:answerID", postsController.changeAnswer)
 router.post("/:category/addAnswer", postsController.addAnswer)
 router.get('/:category/getQuestionByTitle', postsController.getQuestionByTitle)
+export default router
