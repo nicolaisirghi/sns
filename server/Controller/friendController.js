@@ -1,7 +1,6 @@
 import Friends from "../Models/Friends.js";
 import Users from "../Models/Users.js";
 import {NotificationServiceInstance as NotificationService} from "../Services/notificationService.js";
-import Answers from "../Models/Answers.js";
 
 class FriendController {
     async getFriends(req, res, next) {
@@ -52,23 +51,19 @@ class FriendController {
             Friends.findOne({user: newFriend})
         ]);
         if (!currentUserFriends && !requestedUserFriends) {
-            // neither user has any friends yet
             await Promise.all([
                 new Friends({ user, friends: [newFriend] }).save(),
                 new Friends({ user: newFriend, friends: [user] }).save()
             ]);
         } else if (!currentUserFriends) {
-            // add current user as a friend of the requested user
             requestedUserFriends.friends.push(user);
             await requestedUserFriends.save();
             await new Friends({ user, friends: [newFriend] }).save();
         } else if (!requestedUserFriends) {
-            // add requested user as a friend of the current user
             currentUserFriends.friends.push(newFriend);
             await currentUserFriends.save();
             await new Friends({ user: newFriend, friends: [user] }).save();
         } else {
-            // both users already have friends
             const currentFriendsID = currentUserFriends.friends.map(friend => friend._id.toString());
             if (currentFriendsID.includes(newFriend)) {
                 throw new Error("User is already in your list of friends!");
@@ -86,45 +81,6 @@ class FriendController {
         next(e)
     }
     }
-    // async addFriend(req, res, next) {
-    //     try {
-    //         const user = req.user;
-    //         const {newFriend} = req.body
-    //         if (!newFriend) throw new Error('Friend should be in your request !')
-    //
-    //         const [currentUserFriends, requestedUserFriends] =
-    //          await   Promise.all([ Friends.findOne({user}),
-    //                  Friends.findOne({user: newFriend})])
-    //
-    //         if(!requestedUserFriends || !currentUserFriends )
-    //         {
-    //             if(!requestedUserFriends)
-    //             {await new Friends({user:newFriend, friends: user}).save()}
-    //             else{
-    //                 await new Friends({user, friends: newFriend}).save();
-    //             }
-    //         }
-    //         else {
-    //             const currentFriendsID = currentUserFriends.friends.map(friend => friend._id.toString())
-    //             if (!currentFriendsID.includes(newFriend)) {
-    //                 currentUserFriends.friends.push(newFriend)
-    //                 await currentUserFriends.save()
-    //             } else {
-    //                 throw new Error("User is already in your list of friends !")
-    //             }
-    //             requestedUserFriends.friends.push(user);
-    //             const a  = await requestedUserFriends.save()
-    //             console.log(a)
-    //         }
-    //         res.status(200).json({
-    //             status: "SUCCESS",
-    //             message: "Friend added with success !"
-    //         })
-    //
-    //     } catch (e) {
-    //         next(e)
-    //     }
-    // }
 
     async removeFriend(req, res, next) {
         try {

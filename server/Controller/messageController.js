@@ -4,13 +4,12 @@ import Users from "../Models/Users.js";
 class messageController {
     async addMessage(req, res, next) {
         try {
-            const toUser = req.params.toUser;
+            const {toUser} = req.body;
             if (!toUser) throw new Error("Please select whom send the message!")
             const {message} = req.body;
             if (!message) throw new Error("The message can't be empty!")
             const Message = await new Messages({message, date: new Date(), to:toUser,from:req.user}).save()
-            req.io.on("private message",(data)=>console.log("This are data from message : ",data))
-            req.io.emit("private message",Message)
+            socketIO.to(toUser).emit("private message",Message)
             res.status(200).json({
                 message: "Success",
                 data: Message
@@ -23,10 +22,10 @@ class messageController {
 
     async getMessages(req, res, next) {
         try{
-            const toUser = req.params.toUser;
+            const {toUser} = req.params;
             const currentUser = req.user;
             if (!toUser) throw new Error("Please select whom send the message!")
-            const conversation = await Messages.find({$or:[{to:toUser},{to:req.user}]})
+            const conversation = await Messages.find({$or:[{to:toUser},{to:currentUser}]})
             if(!conversation.length) throw new Error("Not conversation between this 2 users!")
             res.status(200).json(conversation)
         }catch(e)

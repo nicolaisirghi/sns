@@ -9,7 +9,7 @@ import {accessMiddleware} from "../Middleware/accessMiddleware.js";
 export const router = express.Router()
 router.use("/posts",accessMiddleware, postRouter)
 router.use("/auth", authRouter)
-router.use("/messages", messageRouter)
+router.use("/messages",accessMiddleware, messageRouter)
 router.use("/groups", groupRouter)
 router.use("/friends",accessMiddleware,friendRouter)
 router.use("/notifications",accessMiddleware,notificationRouter)
