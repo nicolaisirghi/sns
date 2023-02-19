@@ -21,7 +21,9 @@
   },
   "type": "module",
   "scripts": {
-    "start": "nodemon server/index.js"
+    "start": "nodemon server/index.js",
+    "lint": "eslint \"**/*.{js,mjs}\" && prettier --check --loglevel warn \"**/*.{js,mjs,json}\" && stylelint \"**/*.scss\"",
+    "format": "eslint \"**/*.{js,mjs}\" --fix && prettier --write --loglevel warn \"**/*.{js,mjs,json}\" && stylelint \"**/*.scss\" --fix"
   },
   "browserslist": {
     "production": [
@@ -36,6 +38,13 @@
     ]
   },
   "devDependencies": {
-    "nodemon": "^2.0.20"
+    "eslint": "^8.34.0",
+    "eslint-config-prettier": "^8.6.0",
+    "eslint-config-standard": "^17.0.0",
+    "eslint-plugin-import": "^2.27.5",
+    "eslint-plugin-n": "^15.6.1",
+    "eslint-plugin-promise": "^6.1.1",
+    "nodemon": "^2.0.20",
+    "prettier": "2.8.4"
   }
 }

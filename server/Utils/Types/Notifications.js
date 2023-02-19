@@ -1,3 +1,9 @@
 export const types = [
-    'request', 'comment', 'answer', 'mention', 'publish', 'following', 'info'
-]
+  "request",
+  "comment",
+  "answer",
+  "mention",
+  "publish",
+  "following",
+  "info",
+];

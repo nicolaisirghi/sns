@@ -1,10 +1,11 @@
-import { Schema,model } from "mongoose";
+import { Schema, model } from "mongoose";
 const CategorySchema = new Schema(
-    {
-        Category:{
-            type:String,
-            required:true
-        }
-    }, {versionKey: false}
-)
+  {
+    Category: {
+      type: String,
+      required: true,
+    },
+  },
+  { versionKey: false }
+);
 export default model("Categories", CategorySchema);
