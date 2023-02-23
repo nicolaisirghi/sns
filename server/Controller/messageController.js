@@ -46,7 +46,11 @@ class MessageController {
       const chats = await Messages.find({$or : [{ from: currentUser },{to: currentUser}]}, { _id: 0 });
       const idParticipants = chats.map((message) => message.to).filter(id=>id!==currentUser)
       const users = await Users.find({ _id: { $in: idParticipants } });
-      const speakers = users.map((user) => user.name);
+      const speakers = users.map((user) => ({
+        id:user.id,
+        name:user.name,
+        photoURL:user.photoURL
+      }));
       if (!speakers.length) throw new Error("Chats not found !");
       res.status(200).json(speakers);
     } catch (e) {
