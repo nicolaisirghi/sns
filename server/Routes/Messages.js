@@ -4,10 +4,6 @@ import { friendAccessMiddleware } from "../Middleware/friendAccessMiddleware.js"
 
 const router = express.Router();
 router.get("/chats", messageController.getChats);
-router.post(
-  "/addMessage",
-  friendAccessMiddleware,
-  messageController.addMessage
-);
+router.post("/addMessage", friendAccessMiddleware, messageController.addMessage);
 router.get("/getMessages/:toUser", messageController.getMessages);
 export default router;

@@ -17,6 +17,7 @@ export const createSocketConnection = (server) => {
     // global.socket = socket;
     const { id } = socket.handshake.query;
     global.usersOnline[id] = socket.id;
+
     socket.onAny((event, ...args) => {
       console.log("Data from client : ");
       console.log(event, args);

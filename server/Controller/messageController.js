@@ -14,7 +14,7 @@ class MessageController {
         to: toUser,
         from: req.user,
       }).save();
-      global.socketIO.to(toUser).emit("private message", Message);
+      global.socketIO.to(global.usersOnline[toUser]).emit("private message", Message);
       res.status(200).json({
         message: "Success",
         data: Message,
@@ -42,8 +42,9 @@ class MessageController {
 
   async getChats(req, res, next) {
     try {
-      const chats = await Messages.find({ from: req.user }, { _id: 0 });
-      const idParticipants = chats.map((message) => message.to); // .filter(id=>id!==myId)
+      const currentUser = req.user;
+      const chats = await Messages.find({$or : [{ from: currentUser },{to: currentUser}]}, { _id: 0 });
+      const idParticipants = chats.map((message) => message.to).filter(id=>id!==currentUser)
       const users = await Users.find({ _id: { $in: idParticipants } });
       const speakers = users.map((user) => user.name);
       if (!speakers.length) throw new Error("Chats not found !");
