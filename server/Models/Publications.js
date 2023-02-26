@@ -6,17 +6,16 @@ const publicationSchema = new Schema(
       type: String,
       required: true,
     },
-    type: {
-      type: String,
-      required: true,
-    },
     description: {
       type: String,
       required: true,
     },
-    file: {
+    fileData: {
       type: Buffer,
     },
+      fileName:{
+        type:String
+      },
     category: {
       type: String,
       required: true,
@@ -25,7 +24,7 @@ const publicationSchema = new Schema(
       type: Date,
       required: true,
     },
-    user: {
+    author: {
       type: Schema.Types.ObjectId,
       ref: "users",
       required: true,
