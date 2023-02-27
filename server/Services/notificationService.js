@@ -1,6 +1,27 @@
 import Notifications from "../Models/Notifications.js";
 
 class NotificationService {
+  async verifyNotification(req)
+  {
+    const currentUser = req.user;
+    const { notificationsID } = req.body;
+    if(!notificationsID || !notificationsID.length)
+      throw new Error("At least one notification should be specified !")
+    const [currentUserNotifications] = await Promise.all(
+        notificationsID.map((notification) =>
+            Notifications.find({
+              _id: notification,
+              user: currentUser,
+            })
+        )
+    );
+    if (!currentUserNotifications.length)
+      throw new Error("You haven't notifications !");
+
+
+    return currentUserNotifications;
+
+  }
   getNotificationMessage(notification) {
     switch (notification.type) {
       case "request": {

@@ -30,7 +30,7 @@ class MessageController {
       const currentUser = req.user;
       if (!toUser) throw new Error("Please select whom send the message!");
       const conversation = await Messages.find({
-        $or: [{ to: toUser }, { to: currentUser }],
+        $or: [{ to: toUser ,from:currentUser}, { to: currentUser,from:toUser }],
       });
       if (!conversation.length)
         throw new Error("Not conversation between this 2 users!");
