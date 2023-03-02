@@ -11,9 +11,26 @@ class PublicationsController {
         }
     };
 
+    getPublicationsByAuthor = async function (req,res,next)
+    {
+        try{
+            const {author} = req.body;
+            const publications = await Publications.find({author});
+            res.status(200).json({status:"SUCCESS",publications});
+        }catch (e)
+        {
+            next(e);
+        }
+    }
+
     getSinglePublication = async function (req, res, next) {
-        // const category = req.params.category;
-        // const publication =
+        try {
+            const {publicationName} = req.body;
+            const publication = await Publications.findOne({title:publicationName});
+            res.status(200).json({status:"SUCCESS",publication});
+        }catch (e) {
+            next(e);
+        }
     }
 
     addPublication = async function (req, res, next) {

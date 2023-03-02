@@ -5,10 +5,11 @@ import {accessMiddleware} from "../Middleware/accessMiddleware.js";
 
 const router = express.Router();
 const upload = multer({storage: multer.memoryStorage()});
-router.get("/:category/", publicationsController.getPublications);
 router.post(
     "/:category/addPublication", upload.single('file'),accessMiddleware
     , publicationsController.addPublication
 );
-router.get("/:category/getSinglePublication", publicationsController.getSinglePublication);
+router.get("/byAuthor",publicationsController.getPublicationsByAuthor);
+router.get("/byName", publicationsController.getSinglePublication);
+router.get("/:category/", publicationsController.getPublications);
 export default router;
