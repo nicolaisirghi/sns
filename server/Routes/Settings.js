@@ -3,4 +3,5 @@ import {SettingControllerInstance as SettingController} from "../Controller/sett
 
  const router = express.Router();
 router.put("/changeName",SettingController.changeName)
+router.put("/changeEducation",SettingController.changeEducation)
 export default router
