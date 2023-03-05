@@ -22,6 +22,7 @@ class NotificationService {
     return currentUserNotifications;
 
   }
+
   getNotificationMessage(notification) {
     switch (notification.type) {
       case "request": {

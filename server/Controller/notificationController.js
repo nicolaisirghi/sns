@@ -1,6 +1,7 @@
 import Notifications from "../Models/Notifications.js";
 import { types } from "../Utils/Types/Notifications.js";
 import { NotificationServiceInstance as NotificationService } from "../Services/notificationService.js";
+import Users from "../Models/Users.js";
 
 
 class NotificationController {
@@ -16,6 +17,8 @@ class NotificationController {
       } else {
         throw new Error("Invalid type for notifications!");
       }
+      const userInfo = await Users.findById(currentUser,{_id:1,photoURL:1,name:1});
+      notifications = notifications.map(notification => Object.assign(notification,{user:userInfo}))
       res.status(200).json(notifications);
     } catch (e) {
       next(e);
