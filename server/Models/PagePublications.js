@@ -22,7 +22,7 @@ const pagePublicationSchema = new Schema(
 
             }
         ],
-        user: {
+        author: {
             type: Schema.Types.ObjectId,
             ref: "users",
             required: true

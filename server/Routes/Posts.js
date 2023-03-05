@@ -1,24 +1,24 @@
 import express from "express";
-import { PostsControllerInstance as postsController } from "../Controller/postController.js";
+import { PostsControllerInstance as controller } from "../Controller/postController.js";
 
 const router = express.Router();
-router.post("/", postsController.createCategories);
-router.get("/", postsController.getCategories);
-router.get("/:category", postsController.getComments);
-router.post("/:category/addQuestion", postsController.addQuestion);
+router.post("/", controller.createCategories);
+router.get("/", controller.getCategories);
+router.get("/:category", controller.getComments);
+router.post("/:category/addQuestion", controller.addQuestion);
 router.delete(
   "/:category/deleteQuestion/:questionID",
-  postsController.deleteQuestion
+  controller.deleteQuestion
 );
 router.delete(
   "/:category/deleteAnswer/:answerID",
-  postsController.deleteAnswer
+  controller.deleteAnswer
 );
 router.put(
   "/:category/changeQuestion/:questionID",
-  postsController.changeQuestion
+  controller.changeQuestion
 );
-router.put("/:category/changeAnswer/:answerID", postsController.changeAnswer);
-router.post("/:category/addAnswer", postsController.addAnswer);
-router.get("/:category/getQuestionByTitle", postsController.getQuestionByTitle);
+router.put("/:category/changeAnswer/:answerID", controller.changeAnswer);
+router.post("/:category/addAnswer", controller.addAnswer);
+router.get("/:category/getQuestionByTitle", controller.getQuestionByTitle);
 export default router;

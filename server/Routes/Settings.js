@@ -1,7 +1,7 @@
 import express from "express";
-import {SettingControllerInstance as SettingController} from "../Controller/settingController.js";
+import {SettingControllerInstance as controller} from "../Controller/settingController.js";
 
  const router = express.Router();
-router.put("/changeName",SettingController.changeName)
-router.put("/changeEducation",SettingController.changeEducation)
+router.put("/changeName",controller.changeName)
+router.put("/changeEducation",controller.changeEducation)
 export default router

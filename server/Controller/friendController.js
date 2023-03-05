@@ -16,7 +16,6 @@ class FriendController {
         }
     }
 
-
     async requestFriend(req, res, next) {
         try {
             const {requestedFriend} = req.body;

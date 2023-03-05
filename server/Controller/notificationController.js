@@ -19,7 +19,7 @@ class NotificationController {
       }
       const userInfo = await Users.findById(currentUser,{_id:1,photoURL:1,name:1});
       notifications = notifications.map(notification => Object.assign(notification,{user:userInfo}))
-      res.status(200).json({status:"SUCCESS",notifications,itemsCount:notifications.length);
+      res.status(200).json({status:"SUCCESS",notifications,itemsCount:notifications.length});
     } catch (e) {
       next(e);
     }
