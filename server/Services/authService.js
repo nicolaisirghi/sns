@@ -3,6 +3,7 @@ import tokens from "../Models/Tokens.js";
 import Users from "../Models/Users.js";
 import { getToken } from "../Utils/Token/getToken.js";
 import { tokenServiceInstance as tokenService } from "./tokenService.js";
+
 class AuthService {
   async registration(registrationData) {
     const { email, password } = registrationData;

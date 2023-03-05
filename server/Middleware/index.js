@@ -8,6 +8,7 @@ import path, { dirname } from "path";
 import { fileURLToPath } from "url";
 import { errorHandler } from "./errorHandlerMiddleware.js";
 import { router } from "../Routes/index.js";
+
 export const app = express();
 
 export const sessionMiddleware = session({

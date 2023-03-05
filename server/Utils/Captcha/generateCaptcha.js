@@ -1,6 +1,7 @@
 import { generateSync } from "text-to-image";
 import { generateRandomChars } from "./generateRandomChars.js";
 import { logger } from "../Logger/logger.js";
+
 export const generateCaptcha = () => {
   const captcha = generateRandomChars(6);
   logger.silly("Captcha : ", captcha);

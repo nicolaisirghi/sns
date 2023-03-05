@@ -1,4 +1,5 @@
 import Groups from "../Models/Groups.js";
+
 class GroupController {
   async getGlobalGroups(req, res, next) {
     try {

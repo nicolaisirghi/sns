@@ -1,5 +1,6 @@
 import express from "express";
-import {FollowerControllerInstance as controller} from "../Controller/followersController.js";
+import { FollowerControllerInstance as controller } from "../Controller/followersController.js";
+
 const router = express.Router();
 router.get("/", controller.getFollowers);
 router.get("/followedByMe", controller.getFollowedByMe);

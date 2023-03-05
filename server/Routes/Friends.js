@@ -1,5 +1,6 @@
 import express from "express";
-import { FriendControllerInstance as controller} from "../Controller/friendController.js";
+import { FriendControllerInstance as controller } from "../Controller/friendController.js";
+
 const router = express.Router();
 router.get("/", controller.getFriends);
 router.post("/request", controller.requestFriend);

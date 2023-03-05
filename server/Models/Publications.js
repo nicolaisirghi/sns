@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+
 const Schema = mongoose.Schema;
 const publicationSchema = new Schema(
   {
@@ -10,12 +11,20 @@ const publicationSchema = new Schema(
       type: String,
       required: true,
     },
-    fileData: {
-      type: Buffer,
-    },
-      fileName:{
-        type:String
+    filesData: [
+      {
+        fileURL: {
+          type: String,
+          required: true,
+        },
+        type: {
+          type: String,
+          required: true,
+        },
+        _id: false,
       },
+    ],
+
     category: {
       type: String,
       required: true,

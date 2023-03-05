@@ -10,14 +10,8 @@ router.delete(
   "/:category/deleteQuestion/:questionID",
   controller.deleteQuestion
 );
-router.delete(
-  "/:category/deleteAnswer/:answerID",
-  controller.deleteAnswer
-);
-router.put(
-  "/:category/changeQuestion/:questionID",
-  controller.changeQuestion
-);
+router.delete("/:category/deleteAnswer/:answerID", controller.deleteAnswer);
+router.put("/:category/changeQuestion/:questionID", controller.changeQuestion);
 router.put("/:category/changeAnswer/:answerID", controller.changeAnswer);
 router.post("/:category/addAnswer", controller.addAnswer);
 router.get("/:category/getQuestionByTitle", controller.getQuestionByTitle);

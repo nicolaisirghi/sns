@@ -1,8 +1,10 @@
 import "dotenv/config";
 import jwt from "jsonwebtoken";
 import TokenModel from "../Models/Tokens.js";
+
 const accessKey = process.env.JWT_ACCESS_KEY;
 const refreshKey = process.env.JWT_REFRESH_KEY;
+
 class TokenService {
   generateToken(payload) {
     const accessToken = jwt.sign(payload, accessKey, { expiresIn: "10000y" });

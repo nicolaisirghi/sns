@@ -1,6 +1,7 @@
 import { Server } from "socket.io";
 import { sessionMiddleware } from "../Middleware/index.js";
 import { logger } from "../Utils/Logger/logger.js";
+
 export const createSocketConnection = (server) => {
   const socketIO = new Server(server, {
     cors: {
