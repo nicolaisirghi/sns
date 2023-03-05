@@ -4,9 +4,8 @@ import Users from "../Models/Users.js";
 class MessageController {
   async addMessage(req, res, next) {
     try {
-      const { toUser } = req.body;
+      const { toUser,message } = req.body;
       if (!toUser) throw new Error("Please select whom send the message!");
-      const { message } = req.body;
       if (!message) throw new Error("The message can't be empty!");
       const Message = await new Messages({
         message,

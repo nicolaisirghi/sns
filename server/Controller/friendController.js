@@ -8,8 +8,7 @@ class FriendController {
             const user = req.user;
             const data = await Friends.findOne({user}, {_id: 0, user: 0});
             const {friends} = data;
-            const friendsInfo = await Promise.all(
-                friends.map(friend => Users.findById(friend,{password: 0})))
+            const friendsInfo = await Promise.all(friends.map(friend => Users.findById(friend, {password: 0})))
             if (!friends) throw new Error("You haven t friends ");
             res.status(200).json({status: "SUCCESS", data: {friends: friendsInfo, itemCount: friendsInfo.length}});
         } catch (e) {
@@ -24,17 +23,14 @@ class FriendController {
             const userCandidate = Users.findOne({_id: requestedFriend});
             const currentUser = await Users.findOne({_id: req.user});
             if (userCandidate) {
-                const {notification, notificationInfo} =
-                    NotificationService.createNotification({
-                        currentUser,
-                        requestedFriend,
-                    });
+                const {notification, notificationInfo} = NotificationService.createNotification({
+                    currentUser, requestedFriend,
+                });
                 global.socketIO
                     .to(global.usersOnline[requestedFriend])
                     .emit("requestFriend", {notification});
                 res.status(200).json({
-                    message: `The request was sent to user ${requestedFriend}`,
-                    notificationInfo,
+                    message: `The request was sent to user ${requestedFriend}`, notificationInfo,
                 });
             }
         } catch (e) {
@@ -44,22 +40,19 @@ class FriendController {
 
     async addFriend(req, res, next) {
         try {
-            const {user} = req;
+            const user = req.user;
             const {newFriend} = req.body;
 
             if (!newFriend) {
                 throw new Error("Friend should be in your request!");
             }
 
-            const [currentUserFriends, requestedUserFriends] = await Promise.all([
-                Friends.findOne({user}),
-                Friends.findOne({user: newFriend}),
-            ]);
+            const [currentUserFriends, requestedUserFriends] = await Promise.all([Friends.findOne({user}), Friends.findOne({user: newFriend}),]);
             if (!currentUserFriends && !requestedUserFriends) {
-                await Promise.all([
-                    new Friends({user, friends: [newFriend]}).save(),
-                    new Friends({user: newFriend, friends: [user]}).save(),
-                ]);
+                await Promise.all([new Friends({user, friends: [newFriend]}).save(), new Friends({
+                    user: newFriend,
+                    friends: [user]
+                }).save(),]);
             } else if (!currentUserFriends) {
                 requestedUserFriends.friends.push(user);
                 await requestedUserFriends.save();
@@ -69,9 +62,7 @@ class FriendController {
                 await currentUserFriends.save();
                 await new Friends({user: newFriend, friends: [user]}).save();
             } else {
-                const currentFriendsID = currentUserFriends.friends.map((friend) =>
-                    friend._id.toString()
-                );
+                const currentFriendsID = currentUserFriends.friends.map((friend) => friend._id.toString());
                 if (currentFriendsID.includes(newFriend)) {
                     throw new Error("User is already in your list of friends!");
                 }
@@ -81,8 +72,7 @@ class FriendController {
                 await requestedUserFriends.save();
             }
             res.status(200).json({
-                status: "SUCCESS",
-                message: "Friend added with success !",
+                status: "SUCCESS", message: "Friend added with success !",
             });
         } catch (e) {
             next(e);
@@ -99,15 +89,13 @@ class FriendController {
             if (!dataFromDB.friends.includes(oldFriend)) {
                 throw new Error("This user isn't your friend");
             }
-            await Friends.updateOne(
-                {user},
-                {
-                    $pull: {friends: oldFriend},
-                }
-            );
+            await Promise.all([Friends.updateOne({user}, {
+                $pull: {friends: oldFriend},
+            }), Friends.updateOne({user: oldFriend}, {
+                $pull: {friends: user},
+            })])
             res.status(200).json({
-                status: "SUCCESS",
-                message: `User with id ${oldFriend} was removed from friends!`,
+                status: "SUCCESS", message: `User with id ${oldFriend} was removed from friends!`,
             });
         } catch (e) {
             next(e);
