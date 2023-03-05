@@ -21,7 +21,7 @@ class PagePostsController {
     //         const user = req.user;
     //         const {data} = req.body;
     //         const post = {
-    //             post
+    //             name
     //         }
     //
     //     }catch (e)
