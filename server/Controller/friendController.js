@@ -24,22 +24,26 @@ class FriendController {
   async requestFriend(req, res, next) {
     try {
       const { requestedFriend } = req.body;
-      const userCandidate = Users.findOne({ _id: requestedFriend });
-      const currentUser = await Users.findOne({ _id: req.user });
-      if (userCandidate) {
-        const { notification, notificationInfo } =
-          NotificationService.createNotification({
-            currentUser,
-            requestedFriend,
-          });
-        global.socketIO
-          .to(global.usersOnline[requestedFriend])
-          .emit("requestFriend", { notification });
-        res.status(200).json({
-          message: `The request was sent to user ${requestedFriend}`,
-          notificationInfo,
-        });
-      }
+      const userCandidate = await Users.findOne({ _id: requestedFriend });
+      if (!userCandidate)
+        throw new Error("Error, this person didn't exist in database !");
+
+      const [currentUser, { friends }] = await Promise.all([
+        Users.findOne({ _id: req.user }),
+        Friends.findOne({ user: req.user }),
+      ]);
+      if (friends.includes(requestedFriend))
+        throw new Error("User already in your list of friends !");
+
+      NotificationService.createNotification({
+        currentUser,
+        toUsers: [requestedFriend],
+        type: "request",
+      });
+
+      res.status(200).json({
+        message: `The request was sent to user ${requestedFriend}`,
+      });
     } catch (e) {
       next(e);
     }

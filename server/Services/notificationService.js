@@ -1,4 +1,10 @@
 import Notifications from "../Models/Notifications.js";
+import {
+  followUser,
+  publicatePost,
+  requestFriend,
+} from "../Utils/Notifications/GenerateNotifications.js";
+import { sendNotification } from "../Connection/sendData.js";
 
 class NotificationService {
   async verifyNotification(req) {
@@ -23,32 +29,52 @@ class NotificationService {
   getNotificationMessage(notification) {
     switch (notification.type) {
       case "request": {
-        return `${notification.name} has sent you a friend request ! `;
+        return {
+          message: `${notification.currentUser.name} has sent you a friend request ! `,
+          notificationInfo: requestFriend(notification.currentUser),
+        };
       }
+      case "publish": {
+        return {
+          message: `${notification.currentUser.name} has published a new publication`,
+          notificationInfo: publicatePost(notification.currentUser),
+        };
+      }
+      case "following":
+        return {
+          message: `${notification.currentUser.name} has started following you`,
+          notificationInfo: followUser(notification.currentUser),
+        };
       default: {
         return "Some message ... ";
       }
     }
   }
+  async createNotification(notification) {
+    const { notificationInfo, message } =
+      this.getNotificationMessage(notification);
+    const notificationData = await Promise.all(
+      notification.toUsers.map((user) => {
+        return new Notifications({
+          message,
+          type: notificationInfo.type,
+          date: new Date(),
+          user,
+        }).save();
+      })
+    );
+    notification.toUsers.map((user) => {
+      const notificationsForUser = notificationData.filter(
+        (notification) => notification.user.toString() === user.toString()
+      );
+      return sendNotification({
+        to: user,
+        event: notification.type,
+        data: notificationsForUser,
+      });
+    });
 
-  async createNotification({ currentUser, requestedFriend }) {
-    const notificationInfo = this.requestFriend(currentUser);
-    const message = this.getNotificationMessage(notificationInfo);
-    const notification = await new Notifications({
-      message,
-      type: notificationInfo.type,
-      date: new Date(),
-      user: requestedFriend,
-    }).save();
-    return { notification, notificationInfo };
-  }
-
-  requestFriend(fromUser) {
-    return {
-      name: fromUser.name,
-      fromUserID: fromUser.id,
-      type: "request",
-    };
+    return notificationData;
   }
 }
 

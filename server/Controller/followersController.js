@@ -1,5 +1,6 @@
 import Users from "../Models/Users.js";
 import Followers from "../Models/Followers.js";
+import { NotificationServiceInstance as NotificationService } from "../Services/notificationService.js";
 
 class FollowerController {
   async getFollowedByMe(req, res, next) {
@@ -46,7 +47,10 @@ class FollowerController {
       const { followingUser } = req.body;
       if (!followingUser)
         throw new Error("You need to select who you want to follow");
-      const userCandidate = await Followers.findOne({ user });
+      const [userCandidate, currentUser] = await Promise.all([
+        Followers.findOne({ user }),
+        Users.findById(user),
+      ]);
       let data;
       if (!userCandidate) {
         data = await new Followers({
@@ -59,6 +63,11 @@ class FollowerController {
         userCandidate.followPeople.push(followingUser);
         data = await userCandidate.save();
       }
+      NotificationService.createNotification({
+        currentUser,
+        toUsers: [followingUser],
+        type: "following",
+      });
       return res.status(200).json({
         message: "SUCCESS",
         data,

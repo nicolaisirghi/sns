@@ -1,5 +1,5 @@
 import express from "express";
-import { PagePostsCotrollerInstance as controller } from "../Controller/pagePostsController.js";
+import { PagePostsControllerInstance as controller } from "../Controller/pagePostsController.js";
 import multer from "multer";
 import { fileValidatorMiddleware } from "../Middleware/FileValidator/fileValidatorMiddleware.js";
 

@@ -1,6 +1,9 @@
 import PagePublications from "../Models/PagePublications.js";
 import { saveFile } from "../Utils/Files/SaveFile/saveFile.js";
 import { getFileType } from "../Utils/Files/GetFileType/getFileType.js";
+import { getFriendsAndFollowers } from "../Utils/getDataFromModels/Friends.js";
+import { NotificationServiceInstance as NotificationService } from "../Services/notificationService.js";
+import Users from "../Models/Users.js";
 
 class PagePostsController {
   async getMyPosts(req, res, next) {
@@ -25,7 +28,7 @@ class PagePostsController {
         fileURL: saveFile(file),
         type: getFileType(file),
       }));
-      console.log("Files data : ", filesData);
+
       const postData = {
         name: post?.name || null,
         description: post?.description || null,
@@ -34,7 +37,16 @@ class PagePostsController {
         author: user,
         files: filesData,
       };
-      const data = await new PagePublications(postData).save();
+      const [data, toUsers, currentUser] = await Promise.all([
+        new PagePublications(postData).save(),
+        getFriendsAndFollowers(user),
+        Users.findById(req.user),
+      ]);
+      NotificationService.createNotification({
+        currentUser,
+        toUsers,
+        type: "publish",
+      });
       return res.status(200).json({
         status: "SUCCESS",
         data,
@@ -45,4 +57,4 @@ class PagePostsController {
   }
 }
 
-export const PagePostsCotrollerInstance = new PagePostsController();
+export const PagePostsControllerInstance = new PagePostsController();
