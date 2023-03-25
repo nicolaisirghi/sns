@@ -4,6 +4,8 @@ import { getFileType } from "../Utils/Files/GetFileType/getFileType.js";
 import { getFriendsAndFollowers } from "../Utils/getDataFromModels/Friends.js";
 import { NotificationServiceInstance as NotificationService } from "../Services/notificationService.js";
 import Users from "../Models/Users.js";
+import Followers from "../Models/Followers.js";
+import { getData } from "../Utils/Paginator/paginator.js";
 
 class PagePostsController {
   async getMyPosts(req, res, next) {
@@ -14,6 +16,26 @@ class PagePostsController {
         status: 200,
         data,
       });
+    } catch (e) {
+      next(e);
+    }
+  }
+
+  async getFollowersPosts(req, res, next) {
+    try {
+      const user = req.user;
+      const page = req.query.page || 1;
+      const itemsCount = req.query.itemsCount || 5;
+      const { followers } = await Followers.findOne({ user });
+      const [followersPublications] = await Promise.all(
+        followers?.map((follower) =>
+          PagePublications.find({ author: follower })
+        )
+      );
+
+      followersPublications.sort((a, b) => a.time - b.time);
+      const publications = getData(followersPublications, page, itemsCount);
+      res.status(200).send(publications);
     } catch (e) {
       next(e);
     }

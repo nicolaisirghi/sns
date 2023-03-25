@@ -9,5 +9,6 @@ const upload = multer({
   fileFilter: fileValidatorMiddleware,
 });
 router.get("/myPosts", controller.getMyPosts);
+router.get("/followersPosts", controller.getFollowersPosts);
 router.post("/add", upload.array("postFile", 10), controller.addPost);
 export default router;
