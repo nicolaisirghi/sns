@@ -6,11 +6,22 @@ import MailsModel from "../Models/MailActivations.js";
 import { generateCaptcha } from "../Utils/Captcha/generateCaptcha.js";
 import Tokens from "../Models/Tokens.js";
 import users from "../Models/Users.js";
+import Users from "../Models/Users.js";
 
 class AuthController {
   constructor() {
     this.verifyCaptcha = this.verifyCaptcha.bind(this);
     this.login = this.login.bind(this);
+  }
+
+  async getUserInfo(req, res, next) {
+    try {
+      const user = req.query.user ?? req.user;
+      const userData = await Users.findById(user);
+      return res.status(200).json({ userData });
+    } catch (e) {
+      next(e);
+    }
   }
 
   getCaptcha(req, res) {

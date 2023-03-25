@@ -5,6 +5,7 @@ import { authControllerInstance as controller } from "../Controller/authControll
 const router = express.Router();
 router.post("/registration", controller.registration);
 router.post("/login", controller.login);
+router.get("/getUserInfo", accessMiddleware, controller.getUserInfo);
 router.get(
   "/verification/:activationLink",
   accessMiddleware,

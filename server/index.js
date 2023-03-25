@@ -4,6 +4,7 @@ import { createSocketConnection } from "./Connection/socket.js";
 import { app } from "./Middleware/index.js";
 import { logger } from "./Utils/Logger/logger.js";
 import { createGlobalVariables } from "./Global/index.js";
+
 const PORT = process.env.PORT || 5000;
 const start = async () => {
   try {

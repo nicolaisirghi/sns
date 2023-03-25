@@ -5,7 +5,7 @@ import { NotificationServiceInstance as NotificationService } from "../Services/
 class FriendController {
   async getFriends(req, res, next) {
     try {
-      const user = req.user;
+      const user = req.query.user ?? req.user;
       const data = await Friends.findOne({ user }, { _id: 0, user: 0 });
       const { friends } = data;
       const friendsInfo = await Promise.all(

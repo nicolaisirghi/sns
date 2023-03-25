@@ -50,6 +50,7 @@ class NotificationService {
       }
     }
   }
+
   async createNotification(notification) {
     const { notificationInfo, message } =
       this.getNotificationMessage(notification);
