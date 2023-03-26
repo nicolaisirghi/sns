@@ -16,10 +16,20 @@ const pageCommentsSchema = new Schema(
       type: Date,
       default: Date.now(),
     },
-    likes: {
-      type: Number,
-      default: 0,
-    },
+    likes: [
+      {
+        _id: false,
+        user: {
+          type: Schema.Types.ObjectId,
+          ref: "users",
+          required: true,
+        },
+        date: {
+          type: Date,
+          default: new Date(),
+        },
+      },
+    ],
   },
   {
     versionKey: false,

@@ -46,7 +46,7 @@ class PagePostsController {
       const user = req.user;
       const { post } = req.body;
       const files = req.files;
-      const filesData = files.map((file) => ({
+      const filesData = files?.map((file) => ({
         fileURL: saveFile(file),
         type: getFileType(file),
       }));

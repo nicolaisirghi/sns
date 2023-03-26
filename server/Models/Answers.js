@@ -22,10 +22,20 @@ const answerSchema = new Schema(
       type: String,
       required: true,
     },
-    likes: {
-      type: Number,
-      default: 0,
-    },
+    likes: [
+      {
+        _id: false,
+        user: {
+          type: Schema.Types.ObjectId,
+          ref: "users",
+          required: true,
+        },
+        date: {
+          type: Date,
+          default: new Date(),
+        },
+      },
+    ],
   },
   { versionKey: false }
 );

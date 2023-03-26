@@ -11,7 +11,9 @@ router.post(
   accessMiddleware,
   controller.addPublication
 );
+router.post("/addLike", accessMiddleware, controller.addLike);
+router.delete("/removeLike", accessMiddleware, controller.removeLike);
 router.get("/byAuthor", controller.getPublicationsByAuthor);
-router.get("/byName", controller.getSinglePublication);
+router.get("/getByID", controller.getSinglePublication);
 router.get("/:category/", controller.getPublications);
 export default router;

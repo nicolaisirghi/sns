@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose, { Types } from "mongoose";
 
 const Schema = mongoose.Schema;
 const pagePublicationSchema = new Schema(
@@ -27,10 +27,20 @@ const pagePublicationSchema = new Schema(
       ref: "users",
       required: true,
     },
-    likes: {
-      type: Number,
-      default: 0,
-    },
+    likes: [
+      {
+        _id: false,
+        user: {
+          type: Schema.Types.ObjectId,
+          ref: "users",
+          required: true,
+        },
+        date: {
+          type: Date,
+          default: new Date(),
+        },
+      },
+    ],
     location: {
       type: String,
     },
