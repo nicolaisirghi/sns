@@ -56,7 +56,6 @@ class PublicationsController {
         res,
         next
       );
-
       if (isLikedByUser) throw new Error("You already have liked this post !");
       publication.likes.push({
         user,

@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { generateRandomChars } from "../Utils/Captcha/generateRandomChars.js";
 
 const Schema = mongoose.Schema;
 const userSchema = new Schema(
@@ -24,6 +25,11 @@ const userSchema = new Schema(
     password: {
       type: String,
       required: true,
+    },
+    username: {
+      type: String,
+      default: () => generateRandomChars(),
+      unique: true,
     },
   },
   { versionKey: false }

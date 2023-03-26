@@ -8,13 +8,21 @@ import Followers from "../Models/Followers.js";
 import { getData } from "../Utils/Paginator/paginator.js";
 
 class PagePostsController {
-  async getMyPosts(req, res, next) {
+  async getUserPosts(req, res, next) {
     try {
-      const user = req.user;
-      const data = await PagePublications.find({ author: user });
+      const username = req.query.username;
+      const page = req.query.page || 1;
+      const itemsCount = req.query.itemsCount || 5;
+      const author = await Users.findOne({ username }, { _id: 1 });
+      console.log("Author : ", author);
+      const data = await PagePublications.find({
+        $or: [{ author }],
+      });
+      const publications = getData(data, page, itemsCount);
+
       return res.status(200).json({
         status: 200,
-        data,
+        publications,
       });
     } catch (e) {
       next(e);
@@ -52,8 +60,8 @@ class PagePostsController {
       }));
 
       const postData = {
-        name: post?.name || null,
-        description: post?.description || null,
+        name: post?.name ?? null,
+        description: post?.description ?? null,
         time: Date.now(),
         comments: [],
         author: user,
@@ -61,14 +69,14 @@ class PagePostsController {
       };
       const [data, toUsers, currentUser] = await Promise.all([
         new PagePublications(postData).save(),
-        getFriendsAndFollowers(user),
-        Users.findById(req.user),
+        // getFriendsAndFollowers(user),
+        // Users.findById(req.user),
       ]);
-      NotificationService.createNotification({
-        currentUser,
-        toUsers,
-        type: "publish",
-      });
+      // NotificationService.createNotification({
+      //   currentUser,
+      //   toUsers,
+      //   type: "publish",
+      // });
       return res.status(200).json({
         status: "SUCCESS",
         data,

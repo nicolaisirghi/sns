@@ -55,7 +55,7 @@ class NotificationService {
     const { notificationInfo, message } =
       this.getNotificationMessage(notification);
     const notificationData = await Promise.all(
-      notification.toUsers.map((user) => {
+      notification?.toUsers?.map((user) => {
         return new Notifications({
           message,
           type: notificationInfo.type,
@@ -64,7 +64,7 @@ class NotificationService {
         }).save();
       })
     );
-    notification.toUsers.map((user) => {
+    notification?.toUsers?.map((user) => {
       const notificationsForUser = notificationData.filter(
         (notification) => notification.user.toString() === user.toString()
       );

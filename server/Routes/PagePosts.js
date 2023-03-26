@@ -10,7 +10,7 @@ const upload = multer({
   storage: multer.memoryStorage(),
   fileFilter: fileValidatorMiddleware,
 });
-router.get("/myPosts", controller.getMyPosts);
+router.get("/userPosts", controller.getUserPosts);
 router.get("/followersPosts", controller.getFollowersPosts);
 router.post("/add", upload.array("postFile", 10), controller.addPost);
 router.post("/addLike", accessMiddleware, publicationController.addLike);
