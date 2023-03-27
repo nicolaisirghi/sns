@@ -7,6 +7,7 @@ import { generateCaptcha } from "../Utils/Captcha/generateCaptcha.js";
 import Tokens from "../Models/Tokens.js";
 import users from "../Models/Users.js";
 import Users from "../Models/Users.js";
+import { isValidObjectID } from "../Utils/Mongoose/checkValidID.js";
 
 class AuthController {
   constructor() {
@@ -17,7 +18,10 @@ class AuthController {
   async getUserInfo(req, res, next) {
     try {
       const user = req.query.user ?? req.user;
-      const userData = await Users.findById(user);
+      const userData = isValidObjectID(user)
+        ? await Users.findById(user, { password: 0 })
+        : await Users.findOne({ username: user }, { password: 0 });
+      if (!userData) throw new Error("Not user!");
       return res.status(200).json({ userData });
     } catch (e) {
       next(e);
@@ -96,7 +100,6 @@ class AuthController {
   async getMe(req, res, next) {
     try {
       const accessToken = req.session.accessToken;
-      console.log(accessToken);
       if (!accessToken) throw new Error("You are not logged !");
       const userData = tokenService.validateAccessToken(accessToken);
       const userCandidate = await users.find(

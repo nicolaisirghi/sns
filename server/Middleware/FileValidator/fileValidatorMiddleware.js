@@ -5,6 +5,7 @@ export const fileValidatorMiddleware = (req, file, next) => {
     file.mimetype === "image/jpeg" ||
     file.mimetype === "video/mp4" ||
     file.mimetype === "video/mpeg" ||
+    file.mimetype === "video/x-matroska" ||
     file.mimetype === "video/webm"
   ) {
     next(null, true);

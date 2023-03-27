@@ -14,7 +14,6 @@ class PagePostsController {
       const page = req.query.page || 1;
       const itemsCount = req.query.itemsCount || 5;
       const author = await Users.findOne({ username }, { _id: 1 });
-      console.log("Author : ", author);
       const data = await PagePublications.find({
         $or: [{ author }],
       });
