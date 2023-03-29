@@ -11,7 +11,7 @@ class FollowerController {
         throw new Error("You haven t followers ");
       const followersInfo = await Promise.all(
         followPeople.map((follower) =>
-          Users.findById(follower, { password: 0 })
+          Users.findById(follower, { _id: 0, password: 0 })
         )
       );
       res.status(200).json({
@@ -30,7 +30,9 @@ class FollowerController {
       if (!followers || !followers.length)
         throw new Error("You haven t followers ");
       const followersInfo = await Promise.all(
-        followers.map((follower) => Users.findById(follower, { password: 0 }))
+        followers.map((follower) =>
+          Users.findById(follower, { _id: 0, password: 0 })
+        )
       );
       res.status(200).json({
         status: "SUCCESS",

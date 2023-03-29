@@ -9,7 +9,7 @@ class FriendController {
       const data = await Friends.findOne({ user }, { _id: 0, user: 0 });
       const { friends } = data;
       const friendsInfo = await Promise.all(
-        friends.map((friend) => Users.findById(friend, { password: 0 }))
+        friends.map((friend) => Users.findById(friend, { _id: 0, password: 0 }))
       );
       if (!friends) throw new Error("You haven t friends ");
       res.status(200).json({

@@ -20,7 +20,8 @@ class NotificationController {
         throw new Error("Invalid type for notifications!");
       }
       const userInfo = await Users.findById(currentUser, {
-        _id: 1,
+        _id: 0,
+        username: 1,
         photoURL: 1,
         name: 1,
       });

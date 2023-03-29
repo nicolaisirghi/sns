@@ -19,8 +19,8 @@ class AuthController {
     try {
       const user = req.query.user ?? req.user;
       const userData = isValidObjectID(user)
-        ? await Users.findById(user, { password: 0 })
-        : await Users.findOne({ username: user }, { password: 0 });
+        ? await Users.findById(user, { _id: 0, password: 0 })
+        : await Users.findOne({ username: user }, { _id: 0, password: 0 });
       if (!userData) throw new Error("Not user!");
       return res.status(200).json({ userData });
     } catch (e) {
@@ -106,7 +106,7 @@ class AuthController {
         {
           email: userData.email,
         },
-        { password: 0 }
+        { _id: 0, password: 0 }
       );
       return res.json(userCandidate);
     } catch (e) {
