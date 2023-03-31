@@ -8,8 +8,7 @@ const pageCommentsSchema = new Schema(
       required: true,
     },
     author: {
-      type: Schema.Types.ObjectId,
-      ref: "users",
+      type: String,
       required: true,
     },
     time: {
@@ -20,8 +19,7 @@ const pageCommentsSchema = new Schema(
       {
         _id: false,
         user: {
-          type: Schema.Types.ObjectId,
-          ref: "users",
+          type: String,
           required: true,
         },
         date: {

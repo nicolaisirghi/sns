@@ -22,6 +22,7 @@ export const accessMiddleware = async (req, res, next) => {
       }
     }
     req.user = userData.id;
+    req.username = userData.username;
     req.session.accessToken = accessToken;
     next();
   } catch (e) {

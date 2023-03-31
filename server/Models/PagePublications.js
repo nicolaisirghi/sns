@@ -23,16 +23,14 @@ const pagePublicationSchema = new Schema(
       },
     ],
     author: {
-      type: Schema.Types.ObjectId,
-      ref: "users",
+      type: String,
       required: true,
     },
     likes: [
       {
         _id: false,
         user: {
-          type: Schema.Types.ObjectId,
-          ref: "users",
+          type: String,
           required: true,
         },
         date: {

@@ -3,6 +3,7 @@ import { saveFile } from "../Utils/Files/SaveFile/saveFile.js";
 import { getFileType } from "../Utils/Files/GetFileType/getFileType.js";
 import PagePublications from "../Models/PagePublications.js";
 import { getLikes } from "../Utils/getDataFromModels/Publications.js";
+import Users from "../Models/Users.js";
 
 class PublicationsController {
   constructor() {
@@ -107,10 +108,11 @@ class PublicationsController {
   addPublication = async function (req, res, next) {
     try {
       const files = req.files;
+      const { username = "" } = await Users.findById(req.user);
       const publication = {
         ...req.body.publication,
         category: req.params.category,
-        author: req.user,
+        author: username,
         date: new Date(),
         filesData: files
           ? files.map((file) => ({

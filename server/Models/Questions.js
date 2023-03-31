@@ -4,8 +4,7 @@ const Schema = mongoose.Schema;
 const questionSchema = new Schema(
   {
     user: {
-      type: Schema.Types.ObjectId,
-      ref: "users",
+      type: String,
       required: true,
     },
     question: {

@@ -3,7 +3,7 @@ import Users from "../../Models/Users.js";
 export const getLikes = async (publications) => {
   const usersInfo = await Promise.all(
     publications.likes.map((like) =>
-      Users.findById(like.user, { photoURL: 1, name: 1 })
+      Users.findById(like.user, { username: 1, photoURL: 1, name: 1 })
     )
   );
   const likesData = publications.likes.map((like, index) => ({

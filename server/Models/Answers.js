@@ -4,8 +4,7 @@ const Schema = mongoose.Schema;
 const answerSchema = new Schema(
   {
     user: {
-      type: Schema.Types.ObjectId,
-      ref: "users",
+      type: String,
       required: true,
     },
     date: {
@@ -26,8 +25,7 @@ const answerSchema = new Schema(
       {
         _id: false,
         user: {
-          type: Schema.Types.ObjectId,
-          ref: "users",
+          type: String,
           required: true,
         },
         date: {

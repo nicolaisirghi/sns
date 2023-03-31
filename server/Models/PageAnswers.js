@@ -8,8 +8,7 @@ const pageAnswersSchema = new Schema(
       required: true,
     },
     user: {
-      type: Schema.Types.ObjectId,
-      ref: "users",
+      type: String,
       required: true,
     },
   },

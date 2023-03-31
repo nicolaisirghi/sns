@@ -160,10 +160,6 @@ class AuthController {
     } catch (err) {
       req.error = err;
       const resInfo = this.getCaptcha(req, res);
-      console.log(
-        "Req session captchaCounter after function :",
-        req.session.captchaCounter
-      );
 
       if (!resInfo) next(err);
       else {

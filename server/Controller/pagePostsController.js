@@ -14,9 +14,7 @@ class PagePostsController {
       const page = req.query.page || 1;
       const itemsCount = req.query.itemsCount || 5;
       const author = await Users.findOne({ username }, { _id: 1 });
-      const data = await PagePublications.find({
-        $or: [{ author }],
-      });
+      const data = await PagePublications.find({ author });
       const publications = getData(data, page, itemsCount);
 
       return res.status(200).json({
@@ -34,12 +32,14 @@ class PagePostsController {
       const page = req.query.page || 1;
       const itemsCount = req.query.itemsCount || 5;
       const { followers } = await Followers.findOne({ user });
+      const [followersUsername] = await Promise.all(
+        followers?.map((follower) => Users.findById(follower))
+      );
       const [followersPublications] = await Promise.all(
-        followers?.map((follower) =>
-          PagePublications.find({ author: follower })
+        followersUsername?.map(({ username }) =>
+          PagePublications.find({ author: username })
         )
       );
-
       followersPublications.sort((a, b) => a.time - b.time);
       const publications = getData(followersPublications, page, itemsCount);
       res.status(200).send(publications);
@@ -50,7 +50,7 @@ class PagePostsController {
 
   async addPost(req, res, next) {
     try {
-      const user = req.user;
+      const userName = req.username;
       const { post } = req.body;
       const files = req.files;
       const filesData = files?.map((file) => ({
@@ -63,7 +63,7 @@ class PagePostsController {
         description: post?.description ?? null,
         time: Date.now(),
         comments: [],
-        author: user,
+        author: userName,
         files: filesData,
       };
       const [data, toUsers, currentUser] = await Promise.all([
