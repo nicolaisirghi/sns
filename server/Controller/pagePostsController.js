@@ -10,11 +10,10 @@ import { getData } from "../Utils/Paginator/paginator.js";
 class PagePostsController {
   async getUserPosts(req, res, next) {
     try {
-      const username = req.query.username;
+      const username = req.query.username ?? req.username;
       const page = req.query.page || 1;
       const itemsCount = req.query.itemsCount || 5;
-      const author = await Users.findOne({ username }, { _id: 1 });
-      const data = await PagePublications.find({ author });
+      const data = await PagePublications.find({ author: username });
       const publications = getData(data, page, itemsCount);
 
       return res.status(200).json({
@@ -32,9 +31,10 @@ class PagePostsController {
       const page = req.query.page || 1;
       const itemsCount = req.query.itemsCount || 5;
       const { followers } = await Followers.findOne({ user });
-      const [followersUsername] = await Promise.all(
+      const followersUsername = await Promise.all(
         followers?.map((follower) => Users.findById(follower))
       );
+
       const [followersPublications] = await Promise.all(
         followersUsername?.map(({ username }) =>
           PagePublications.find({ author: username })

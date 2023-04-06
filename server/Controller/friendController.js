@@ -1,6 +1,7 @@
 import Friends from "../Models/Friends.js";
 import Users from "../Models/Users.js";
 import { NotificationServiceInstance as NotificationService } from "../Services/notificationService.js";
+import RequestedFriends from "../Models/RequestedFriends.js";
 
 class FriendController {
   async getFriends(req, res, next) {
@@ -28,12 +29,40 @@ class FriendController {
       if (!userCandidate)
         throw new Error("Error, this person didn't exist in database !");
 
-      const [currentUser, { friends }] = await Promise.all([
+      const [currentUser, { friends }, checkRequest] = await Promise.all([
         Users.findOne({ _id: req.user }),
         Friends.findOne({ user: req.user }),
+        RequestedFriends.findOne({ user: req.user }),
       ]);
+
       if (friends.includes(requestedFriend))
         throw new Error("User already in your list of friends !");
+
+      const requestedFriends = checkRequest?.requestedFriends;
+
+      if (!requestedFriends || !requestedFriends.length) {
+        await new RequestedFriends({
+          user: req.user,
+          requestedFriends: [requestedFriend],
+        }).save();
+        NotificationService.createNotification({
+          currentUser,
+          toUsers: [requestedFriend],
+          type: "request",
+        });
+
+        return res.status(200).json({
+          message: `The request was sent to user ${requestedFriend}`,
+        });
+      }
+      const requestedFriendsID = requestedFriends.map((friend) =>
+        friend._id.toString()
+      );
+      if (requestedFriendsID.includes(requestedFriend)) {
+        throw new Error("You already have send a request to this user !");
+      }
+      checkRequest.requestedFriends.push(requestedFriend);
+      await checkRequest.save();
 
       NotificationService.createNotification({
         currentUser,
