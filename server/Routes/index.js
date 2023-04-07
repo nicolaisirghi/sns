@@ -8,6 +8,7 @@ import publicationsRouter from "./Publications.js";
 import settingsRouter from "./Settings.js";
 import followerRouter from "./Followers.js";
 import pagePostsRouter from "./PagePosts.js";
+import usersRouter from "./Users.js";
 import express from "express";
 import { accessMiddleware } from "../Middleware/accessMiddleware.js";
 
@@ -22,3 +23,4 @@ router.use("/publications", publicationsRouter);
 router.use("/settings", accessMiddleware, settingsRouter);
 router.use("/followers", accessMiddleware, followerRouter);
 router.use("/pagePosts", accessMiddleware, pagePostsRouter);
+router.use("/users", usersRouter);

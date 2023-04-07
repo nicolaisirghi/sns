@@ -8,24 +8,14 @@ import Tokens from "../Models/Tokens.js";
 import users from "../Models/Users.js";
 import Users from "../Models/Users.js";
 import { isValidObjectID } from "../Utils/Mongoose/checkValidID.js";
+import followers from "../Models/Followers.js";
+import { promise } from "bcrypt/promises.js";
+import Followers from "../Models/Followers.js";
 
 class AuthController {
   constructor() {
     this.verifyCaptcha = this.verifyCaptcha.bind(this);
     this.login = this.login.bind(this);
-  }
-
-  async getUserInfo(req, res, next) {
-    try {
-      const user = req.query.user ?? req.user;
-      const userData = isValidObjectID(user)
-        ? await Users.findById(user, { _id: 0, password: 0 })
-        : await Users.findOne({ username: user }, { _id: 0, password: 0 });
-      if (!userData) throw new Error("Not user!");
-      return res.status(200).json({ userData });
-    } catch (e) {
-      next(e);
-    }
   }
 
   getCaptcha(req, res) {
@@ -97,18 +87,53 @@ class AuthController {
     }
   }
 
+  async getUserInfo(req, res, next) {
+    try {
+      const user = req.query.user ?? req.user;
+      const userCandidate = !isValidObjectID(user)
+        ? await Users.findOne({ username: user }, { _id: 1 })
+        : user;
+
+      const [userInfo, followersInfo] = await Promise.all([
+        Users.findById(userCandidate, { _id: 0, password: 0 }),
+        Followers.findOne({ user: userCandidate }, { _id: 0, password: 0 }),
+      ]);
+
+      if (!userInfo) throw new Error("Not user!");
+
+      const followers = followersInfo?.followers ?? [];
+      const followedByMe = followersInfo?.followPeople ?? [];
+      const planUserInfo = userInfo.toObject();
+      const userData = {
+        ...planUserInfo,
+        followers: followers.length,
+        followedByMe: followedByMe.length,
+      };
+      return res.json({
+        userData,
+      });
+    } catch (e) {
+      next(e);
+    }
+  }
   async getMe(req, res, next) {
     try {
-      const accessToken = req.session.accessToken;
-      if (!accessToken) throw new Error("You are not logged !");
-      const userData = tokenService.validateAccessToken(accessToken);
-      const userCandidate = await users.find(
-        {
-          email: userData.email,
-        },
-        { _id: 0, password: 0 }
-      );
-      return res.json(userCandidate);
+      const currentUser = req.user;
+      const [userInfo, folowersInfo] = await Promise.all([
+        users.findById(currentUser, { password: 0 }),
+        followers.findOne({ user: currentUser }),
+      ]);
+      const planUserInfo = userInfo.toObject();
+      if (folowersInfo) {
+        const followers = folowersInfo?.followers;
+        const followedByMe = folowersInfo.followPeople;
+        return res.json({
+          ...planUserInfo,
+          followers: followers.length,
+          followedByMe: followedByMe.length,
+        });
+      }
+      return res.json(planUserInfo);
     } catch (e) {
       next(e);
     }
