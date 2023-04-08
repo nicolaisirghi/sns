@@ -11,6 +11,20 @@ const pageAnswersSchema = new Schema(
       type: String,
       required: true,
     },
+
+    likes: [
+      {
+        _id: false,
+        user: {
+          type: String,
+          required: true,
+        },
+        date: {
+          type: Date,
+          default: new Date(),
+        },
+      },
+    ],
   },
   {
     versionKey: false,

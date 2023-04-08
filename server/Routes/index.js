@@ -9,6 +9,7 @@ import settingsRouter from "./Settings.js";
 import followerRouter from "./Followers.js";
 import pagePostsRouter from "./PagePosts.js";
 import usersRouter from "./Users.js";
+import commentsRouter from "./Comments.js";
 import express from "express";
 import { accessMiddleware } from "../Middleware/accessMiddleware.js";
 
@@ -24,3 +25,4 @@ router.use("/settings", accessMiddleware, settingsRouter);
 router.use("/followers", accessMiddleware, followerRouter);
 router.use("/pagePosts", accessMiddleware, pagePostsRouter);
 router.use("/users", usersRouter);
+router.use("/comments", accessMiddleware, commentsRouter);

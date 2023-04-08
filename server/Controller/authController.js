@@ -193,6 +193,17 @@ class AuthController {
     }
   }
 
+  async checkToken(req, res, next) {
+    try {
+      const authorizationHeader = req.headers.authorization;
+      const accessToken = authorizationHeader.split(" ")[1];
+      const userData = tokenService.validateAccessToken(accessToken);
+      return res.status(200).json({ userData });
+    } catch (e) {
+      next(e);
+    }
+  }
+
   async activateMail(req, res, next) {
     try {
       const activationLink = req.params.activationLink;

@@ -11,6 +11,7 @@ router.get(
   accessMiddleware,
   controller.activateMail
 );
+router.get("/checkToken", controller.checkToken);
 router.delete("/logout", controller.logout);
 router.get("/me", accessMiddleware, controller.getMe);
 router.get("/refresh", controller.refresh);

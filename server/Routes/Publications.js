@@ -12,7 +12,6 @@ router.post(
   controller.addPublication
 );
 router.post("/addLike", accessMiddleware, controller.addLike);
-router.post("/addComment", accessMiddleware, controller.addComment);
 router.delete("/removeLike", accessMiddleware, controller.removeLike);
 router.get("/byAuthor", controller.getPublicationsByAuthor);
 router.get("/getByID", controller.getSinglePublication);
