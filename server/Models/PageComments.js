@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose, { Types } from "mongoose";
 
 const Schema = mongoose.Schema;
 const pageCommentsSchema = new Schema(
@@ -15,6 +15,12 @@ const pageCommentsSchema = new Schema(
       type: Date,
       default: Date.now(),
     },
+    answers: [
+      {
+        type: Types.ObjectId,
+        ref: "pageanswers",
+      },
+    ],
     likes: [
       {
         _id: false,

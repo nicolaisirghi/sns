@@ -4,6 +4,7 @@ import { getFileType } from "../Utils/Files/GetFileType/getFileType.js";
 import PagePublications from "../Models/PagePublications.js";
 import { getLikes } from "../Utils/getDataFromModels/Publications.js";
 import Users from "../Models/Users.js";
+import PageComments from "../Models/PageComments.js";
 
 class PublicationsController {
   constructor() {
@@ -21,6 +22,38 @@ class PublicationsController {
     }
   };
 
+  addComment = async function (req, res, next) {
+    try {
+      const { commentInfo } = req.body;
+      if (!commentInfo) throw new Error("You must to send commentInfo");
+      {
+        const { text, commentedTo } = commentInfo;
+        if (!text) throw new Error("The comment text is required !");
+        if (!commentedTo)
+          throw new Error("The commentedTo field is required !");
+
+        const [publicationCandidate, pagePublicationCandidate] =
+          await Promise.all([
+            Publications.findById(commentedTo),
+            PagePublications.findById(commentedTo),
+          ]);
+
+        const publicationData =
+          publicationCandidate ?? pagePublicationCandidate;
+        if (!publicationData) throw new Error("This publication didn't exist");
+        const author = req.username;
+        console.log("Author : ", author);
+        const newComment = await new PageComments({ text, author }).save();
+        publicationData.comments.push(newComment._id);
+        await publicationData.save();
+        return res
+          .status(200)
+          .json({ status: "SUCCES", message: "The comment was send !" });
+      }
+    } catch (e) {
+      next(e);
+    }
+  };
   getPublicationsByAuthor = async function (req, res, next) {
     try {
       const { author } = req.body;

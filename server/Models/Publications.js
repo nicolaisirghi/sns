@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose, { Mongoose, Types } from "mongoose";
 
 const Schema = mongoose.Schema;
 const publicationSchema = new Schema(
@@ -24,6 +24,7 @@ const publicationSchema = new Schema(
         _id: false,
       },
     ],
+    comments: [{ type: Types.ObjectId, ref: "pagecomments" }],
 
     category: {
       type: String,
