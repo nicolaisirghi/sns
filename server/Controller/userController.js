@@ -1,20 +1,24 @@
 import Users from "../Models/Users.js";
+import { getData } from "../Utils/Paginator/paginator.js";
 
 class UserController {
   async getUserNameByRegex(req, res, next) {
     try {
       const name = req.query.name;
+      const page = req.query.page ?? 1;
+      const itemsCount = req.query.itemsCount ?? 5;
       if (!name) throw new Error("Not name in your request !");
       const nameRegexp = new RegExp(name, "i");
-      const usersCandidate = await Users.find(
+      const usersInfo = await Users.find(
         { name: nameRegexp },
-        { name: 1, username: 1 }
+        { name: 1, username: 1, photoURL: 1 }
       );
-      if (!usersCandidate || !usersCandidate.length)
+      const usersData = getData(usersInfo, page, itemsCount);
+      if (!usersData || !usersData.length)
         throw new Error("Users with this name didn't exist ");
       return res
         .status(200)
-        .json({ users: usersCandidate, itemsCount: usersCandidate.length });
+        .json({ users: usersData, itemsCount: usersInfo.length });
     } catch (e) {
       next(e);
     }
