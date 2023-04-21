@@ -1,3 +1,4 @@
+import express from "express";
 import postRouter from "./Posts.js";
 import authRouter from "./Auth.js";
 import messageRouter from "./Messages.js";
@@ -10,7 +11,7 @@ import followerRouter from "./Followers.js";
 import pagePostsRouter from "./PagePosts.js";
 import usersRouter from "./Users.js";
 import commentsRouter from "./Comments.js";
-import express from "express";
+import conferenceRouter from "./Conferences.js";
 import { accessMiddleware } from "../Middleware/accessMiddleware.js";
 
 export const router = express.Router();
@@ -26,3 +27,4 @@ router.use("/followers", accessMiddleware, followerRouter);
 router.use("/pagePosts", accessMiddleware, pagePostsRouter);
 router.use("/users", usersRouter);
 router.use("/comments", accessMiddleware, commentsRouter);
+router.use("/conferences", accessMiddleware, conferenceRouter);
