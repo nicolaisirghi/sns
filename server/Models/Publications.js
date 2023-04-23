@@ -30,7 +30,7 @@ const publicationSchema = new Schema(
       type: String,
       required: true,
     },
-    date: {
+    time: {
       type: Date,
       required: true,
     },

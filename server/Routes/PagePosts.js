@@ -19,4 +19,5 @@ router.delete(
   accessMiddleware,
   publicationController.removeLike
 );
+
 export default router;

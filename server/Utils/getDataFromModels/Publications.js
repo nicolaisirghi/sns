@@ -3,6 +3,7 @@ import PageComments from "../../Models/PageComments.js";
 import Publications from "../../Models/Publications.js";
 import PagePublications from "../../Models/PagePublications.js";
 import PageAnswers from "../../Models/PageAnswers.js";
+import Conferences from "../../Models/Conferences.js";
 
 export const getLikes = async (publications) => {
   const usersInfo = await Promise.all(
