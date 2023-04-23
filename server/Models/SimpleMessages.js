@@ -7,14 +7,12 @@ const MessageSchema = new Schema(
       required: true,
     },
     from: {
-      type: Schema.Types.ObjectId,
+      type: String,
       required: true,
-      ref: "users",
     },
     to: {
-      type: Schema.Types.ObjectId,
+      type: String,
       required: true,
-      ref: "users",
     },
     date: {
       type: Date,

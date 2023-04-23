@@ -11,7 +11,7 @@ class MessageController {
         message,
         date: new Date(),
         to: toUser,
-        from: req.user,
+        from: req.username,
       }).save();
       global.socketIO
         .to(global.usersOnline[toUser])
@@ -28,7 +28,7 @@ class MessageController {
   async getMessages(req, res, next) {
     try {
       const { toUser } = req.params;
-      const currentUser = req.user;
+      const currentUser = req.username;
       if (!toUser) throw new Error("Please select whom send the message!");
       const conversation = await Messages.find({
         $or: [
@@ -58,6 +58,7 @@ class MessageController {
       const speakers = users.map((user) => ({
         id: user.id,
         name: user.name,
+        username: user.username,
         photoURL: user.photoURL,
       }));
       if (!speakers.length) throw new Error("Chats not found !");
