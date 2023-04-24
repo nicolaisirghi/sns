@@ -4,14 +4,11 @@ const Schema = mongoose.Schema;
 const requestedFriendSchema = new Schema(
   {
     user: {
-      type: Schema.Types.ObjectId,
-      ref: "users",
-      required: true,
+      type: String,
     },
     requestedFriends: [
       {
-        type: Schema.Types.ObjectId,
-        ref: "users",
+        type: String,
       },
     ],
   },

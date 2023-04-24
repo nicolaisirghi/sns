@@ -6,11 +6,13 @@ import RequestedFriends from "../Models/RequestedFriends.js";
 class FriendController {
   async getFriends(req, res, next) {
     try {
-      const user = req.query.user ?? req.user;
+      const user = req.query.username ?? req.username;
       const data = await Friends.findOne({ user }, { _id: 0, user: 0 });
       const { friends } = data;
       const friendsInfo = await Promise.all(
-        friends.map((friend) => Users.findById(friend, { _id: 0, password: 0 }))
+        friends.map((friend) =>
+          Users.findOne({ username: friend }, { _id: 0, password: 0 })
+        )
       );
       if (!friends) throw new Error("You haven t friends ");
       res.status(200).json({
@@ -25,14 +27,14 @@ class FriendController {
   async requestFriend(req, res, next) {
     try {
       const { requestedFriend } = req.body;
-      const userCandidate = await Users.findOne({ _id: requestedFriend });
+      const userCandidate = await Users.findOne({ username: requestedFriend });
       if (!userCandidate)
         throw new Error("Error, this person didn't exist in database !");
 
       const [currentUser, { friends }, checkRequest] = await Promise.all([
-        Users.findOne({ _id: req.user }),
-        Friends.findOne({ user: req.user }),
-        RequestedFriends.findOne({ user: req.user }),
+        Users.findOne({ username: req.username }),
+        Friends.findOne({ user: req.username }),
+        RequestedFriends.findOne({ user: req.username }),
       ]);
 
       if (friends.includes(requestedFriend))
@@ -42,7 +44,7 @@ class FriendController {
 
       if (!requestedFriends || !requestedFriends.length) {
         await new RequestedFriends({
-          user: req.user,
+          user: req.username,
           requestedFriends: [requestedFriend],
         }).save();
         NotificationService.createNotification({
@@ -55,10 +57,8 @@ class FriendController {
           message: `The request was sent to user ${requestedFriend}`,
         });
       }
-      const requestedFriendsID = requestedFriends.map((friend) =>
-        friend._id.toString()
-      );
-      if (requestedFriendsID.includes(requestedFriend)) {
+
+      if (requestedFriends.includes(requestedFriend)) {
         throw new Error("You already have send a request to this user !");
       }
       checkRequest.requestedFriends.push(requestedFriend);
@@ -80,7 +80,7 @@ class FriendController {
 
   async addFriend(req, res, next) {
     try {
-      const user = req.user;
+      const user = req.username;
       const { newFriend } = req.body;
 
       if (!newFriend) {
@@ -108,9 +108,7 @@ class FriendController {
         await currentUserFriends.save();
         await new Friends({ user: newFriend, friends: [user] }).save();
       } else {
-        const currentFriendsID = currentUserFriends.friends.map((friend) =>
-          friend._id.toString()
-        );
+        const currentFriendsID = currentUserFriends.friends;
         if (currentFriendsID.includes(newFriend)) {
           throw new Error("User is already in your list of friends!");
         }
@@ -130,7 +128,7 @@ class FriendController {
 
   async removeFriend(req, res, next) {
     try {
-      const user = req.user;
+      const user = req.username;
       const dataFromDB = await Friends.findOne({ user });
       if (!dataFromDB) throw new Error("Wrong ID ! ");
       const { oldFriend } = req.body;
@@ -154,7 +152,7 @@ class FriendController {
       ]);
       res.status(200).json({
         status: "SUCCESS",
-        message: `User with id ${oldFriend} was removed from friends!`,
+        message: `User with username ${oldFriend} was removed from friends!`,
       });
     } catch (e) {
       next(e);
