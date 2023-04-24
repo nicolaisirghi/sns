@@ -1,6 +1,7 @@
 import { Server } from "socket.io";
 import { sessionMiddleware } from "../Middleware/index.js";
 import { logger } from "../Utils/Logger/logger.js";
+import { getUsersOnline } from "../Utils/Socket/GlobalUsers.js";
 
 export const createSocketConnection = (server) => {
   const socketIO = new Server(server, {
@@ -19,6 +20,7 @@ export const createSocketConnection = (server) => {
     const { username } = socket.handshake.query;
     global.globalUsers[username] = socket.id;
 
+    socket.broadcast.emit("user connected", getUsersOnline());
     socket.onAny((event, ...args) => {
       console.log("Data from client : ");
       console.log(event, args);
@@ -27,6 +29,7 @@ export const createSocketConnection = (server) => {
     socket.on("disconnect", () => {
       global.globalUsers[username] = null;
       logger.info(`🔥: ${socket.id} user just disconnected!`);
+      socket.broadcast.emit("user disconnected", getUsersOnline());
     });
   });
   return socketIO;
