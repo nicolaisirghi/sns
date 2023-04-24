@@ -16,8 +16,8 @@ export const createSocketConnection = (server) => {
   socketIO.on("connection", (socket) => {
     // need to be fixes
     // global.socket = socket;
-    const { id } = socket.handshake.query;
-    global.usersOnline[id] = socket.id;
+    const { username } = socket.handshake.query;
+    global.globalUsers[username] = socket.id;
 
     socket.onAny((event, ...args) => {
       console.log("Data from client : ");
@@ -25,7 +25,7 @@ export const createSocketConnection = (server) => {
     });
     logger.info(`⚡: ${socket.id} user just connected!`);
     socket.on("disconnect", () => {
-      global.usersOnline[id] = null;
+      global.globalUsers[username] = null;
       logger.info(`🔥: ${socket.id} user just disconnected!`);
     });
   });

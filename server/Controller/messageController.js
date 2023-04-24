@@ -14,7 +14,7 @@ class MessageController {
         from: req.username,
       }).save();
       global.socketIO
-        .to(global.usersOnline[toUser])
+        .to(global.globalUsers[toUser])
         .emit("private message", Message);
       res.status(200).json({
         message: "Success",

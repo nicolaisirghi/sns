@@ -1,5 +1,6 @@
 import Users from "../Models/Users.js";
 import { getData } from "../Utils/Paginator/paginator.js";
+import { createArray } from "../Utils/CustomMethods/Objects.js";
 
 class UserController {
   async getUserNameByRegex(req, res, next) {
@@ -23,6 +24,19 @@ class UserController {
       next(e);
     }
   }
-}
 
+  getUsersOnline(req, res, next) {
+    try {
+      const usersArray = createArray(usersOnline);
+      const online = usersArray
+        .filter((user) => {
+          const index = Object.keys(user)[0];
+          return user[index] !== null;
+        })
+        .map((user) => Object.keys(user)[0]);
+    } catch (e) {
+      next(e);
+    }
+  }
+}
 export const userControler = new UserController();
