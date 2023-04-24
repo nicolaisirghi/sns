@@ -3,19 +3,17 @@ import Users from "../Models/Users.js";
 
 export const friendAccessMiddleware = async (req, res, next) => {
   try {
-    const currentUser = req.user;
+    const currentUser = req.username;
 
     const { toUser } = req.body;
     const [currentUserFriends, friendInfo] = await Promise.all([
       Friends.findOne({ user: currentUser }),
       Users.findOne({ username: toUser }),
     ]);
-    const friendID = friendInfo._id.toString();
+    const friendUsername = friendInfo.username;
     if (!currentUserFriends) throw new Error("You haven't friends");
-    const currentFriendsID = currentUserFriends.friends.map((friend) =>
-      friend._id.toString()
-    );
-    if (!currentFriendsID.includes(friendID)) {
+    const currentFriends = currentUserFriends.friends;
+    if (!currentFriends.includes(friendUsername)) {
       throw new Error("You can't send message to non-friends");
     }
     next();
