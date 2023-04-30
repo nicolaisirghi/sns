@@ -12,6 +12,10 @@ const pageAnswersSchema = new Schema(
       required: true,
     },
 
+    time: {
+      type: Date,
+      default: new Date(),
+    },
     likes: [
       {
         _id: false,
