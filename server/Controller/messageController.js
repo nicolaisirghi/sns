@@ -46,7 +46,7 @@ class MessageController {
 
   async getChats(req, res, next) {
     try {
-      const currentUser = req.user;
+      const currentUser = req.username;
       const chats = await Messages.find(
         { $or: [{ from: currentUser }, { to: currentUser }] },
         { _id: 0 }
@@ -54,7 +54,7 @@ class MessageController {
       const idParticipants = chats
         .map((message) => message.to)
         .filter((id) => id !== currentUser);
-      const users = await Users.find({ _id: { $in: idParticipants } });
+      const users = await Users.find({ username: { $in: idParticipants } });
       const speakers = users.map((user) => ({
         id: user.id,
         name: user.name,
