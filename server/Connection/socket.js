@@ -2,6 +2,7 @@ import { Server } from "socket.io";
 import { sessionMiddleware } from "../Middleware/index.js";
 import { logger } from "../Utils/Logger/logger.js";
 import { getUsersOnline } from "../Utils/Socket/GlobalUsers.js";
+import Users from "../Models/Users.js";
 
 export const createSocketConnection = (server) => {
   const socketIO = new Server(server, {
@@ -26,8 +27,11 @@ export const createSocketConnection = (server) => {
       console.log(event, args);
     });
     logger.info(`⚡: ${socket.id} user just connected!`);
-    socket.on("disconnect", () => {
+    socket.on("disconnect", async () => {
       global.globalUsers[username] = null;
+      const disconnectedUser = await Users.findOne({ username });
+      disconnectedUser.lastVisit = new Date();
+      await disconnectedUser.save();
       logger.info(`🔥: ${socket.id} user just disconnected!`);
       socket.broadcast.emit("user disconnected", getUsersOnline());
     });

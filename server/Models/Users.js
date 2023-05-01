@@ -31,6 +31,10 @@ const userSchema = new Schema(
       default: () => generateRandomChars(),
       unique: true,
     },
+    lastVisit: {
+      type: Date,
+      default: new Date(),
+    },
   },
   { versionKey: false }
 );
