@@ -1,5 +1,8 @@
 import Messages from "../Models/SimpleMessages.js";
 import Users from "../Models/Users.js";
+import { getData } from "../Utils/Paginator/paginator.js";
+import { createFilterQuery } from "../Utils/Filters/filters.js";
+import { changeKey } from "../Utils/CustomMethods/Objects.js";
 
 class MessageController {
   async addMessage(req, res, next) {
@@ -28,17 +31,40 @@ class MessageController {
   async getMessages(req, res, next) {
     try {
       const { toUser } = req.params;
+      const { page = 1, itemsCount = 5 } = req.query;
       const currentUser = req.username;
+      const { filters = null } = req.body;
       if (!toUser) throw new Error("Please select whom send the message!");
-      const conversation = await Messages.find({
-        $or: [
-          { to: toUser, from: currentUser },
-          { to: currentUser, from: toUser },
-        ],
-      });
-      if (!conversation.length)
+      let conversation;
+      if (filters) {
+        const _query = createFilterQuery(filters);
+        const query = changeKey(_query, "time", "date");
+        conversation = await Messages.find({
+          $and: [
+            {
+              $or: [
+                { to: toUser, from: currentUser },
+                { to: currentUser, from: toUser },
+              ],
+            },
+            query,
+          ],
+        });
+      } else {
+        conversation = await Messages.find({
+          $or: [
+            { to: toUser, from: currentUser },
+            { to: currentUser, from: toUser },
+          ],
+        });
+      }
+
+      const messages = getData(conversation, page, itemsCount);
+
+      if (!messages.length)
         throw new Error("Not conversation between this 2 users!");
-      res.status(200).json(conversation);
+
+      res.status(200).json(messages);
     } catch (e) {
       next(e);
     }
@@ -47,6 +73,8 @@ class MessageController {
   async getChats(req, res, next) {
     try {
       const currentUser = req.username;
+      const { page = 1, itemsCount = 5 } = req.query;
+
       const chats = await Messages.find(
         { $or: [{ from: currentUser }, { to: currentUser }] },
         { _id: 0 }
@@ -61,8 +89,9 @@ class MessageController {
         username: user.username,
         photoURL: user.photoURL,
       }));
-      if (!speakers.length) throw new Error("Chats not found !");
-      res.status(200).json(speakers);
+      const _chats = getData(speakers, page, itemsCount);
+      if (!_chats.length) throw new Error("Chats not found !");
+      res.status(200).json(_chats);
     } catch (e) {
       next(e);
     }

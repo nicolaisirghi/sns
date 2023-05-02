@@ -1,6 +1,7 @@
 export const createFilterQuery = (filters) => {
   const { time = null, date = null } = filters;
   let query = {};
+
   if (time) {
     if (time.startDate && time.endDate) {
       query.time = {
