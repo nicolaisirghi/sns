@@ -59,7 +59,8 @@ class MessageController {
         });
       }
 
-      const messages = getData(conversation, page, itemsCount);
+      const reversedMessages = conversation.reverse();
+      const messages = getData(reversedMessages, page, itemsCount);
 
       if (!messages.length)
         throw new Error("Not conversation between this 2 users!");
