@@ -23,9 +23,18 @@ export const createSocketConnection = (server) => {
 
     socket.broadcast.emit("user connected", getUsersOnline());
     socket.onAny((event, ...args) => {
-      console.log("Data from client : ");
-      console.log(event, args);
+      if (event === `"callInviter"`) {
+        const [
+          {
+            data: { toUserName, roomName },
+          },
+        ] = args;
+
+        socket.emit("callTacker", { roomName });
+        socket.to(globalUsers[toUserName]).emit("callTacker", { roomName });
+      }
     });
+
     logger.info(`⚡: ${socket.id} user just connected!`);
     socket.on("disconnect", async () => {
       global.globalUsers[username] = null;

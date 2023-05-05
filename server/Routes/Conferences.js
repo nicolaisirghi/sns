@@ -9,5 +9,6 @@ router.delete("/removeConference", controller.removeConference);
 router.post("/online/createRoom", meetingController.createRoom);
 router.get("/online/verifyRoom", meetingController.validateRoom);
 router.get("/online/meteredDomain", meetingController.getMeteredDomain);
+router.delete("/online/removeRoom", meetingController.removeRoom);
 
 export default router;
