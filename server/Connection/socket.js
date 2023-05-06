@@ -3,6 +3,7 @@ import { sessionMiddleware } from "../Middleware/index.js";
 import { logger } from "../Utils/Logger/logger.js";
 import { getUsersOnline } from "../Utils/Socket/GlobalUsers.js";
 import Users from "../Models/Users.js";
+import { getSocketEvent } from "./SocketEvents/index.js";
 
 export const createSocketConnection = (server) => {
   const socketIO = new Server(server, {
@@ -23,16 +24,7 @@ export const createSocketConnection = (server) => {
 
     socket.broadcast.emit("user connected", getUsersOnline());
     socket.onAny((event, ...args) => {
-      if (event === `"callInviter"`) {
-        const [
-          {
-            data: { toUserName, roomName },
-          },
-        ] = args;
-
-        socket.emit("callTacker", { roomName });
-        socket.to(globalUsers[toUserName]).emit("callTacker", { roomName });
-      }
+      getSocketEvent(event, socket, args);
     });
 
     logger.info(`⚡: ${socket.id} user just connected!`);
