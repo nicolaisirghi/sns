@@ -24,17 +24,28 @@ export const createSocketConnection = (server) => {
 
     socket.broadcast.emit("user connected", getUsersOnline());
     socket.onAny((event, ...args) => {
+      logger.info(
+        `[Socket] Event name : ${event}, args : ${JSON.stringify(args)}`
+      );
       getSocketEvent(event, socket, args);
     });
 
-    logger.info(`⚡: ${socket.id} user just connected!`);
+    logger.info(
+      `[Socket] ${username} with socket id :  ${socket.id}  just connected!`
+    );
     socket.on("disconnect", async () => {
-      global.globalUsers[username] = null;
-      const disconnectedUser = await Users.findOne({ username });
-      disconnectedUser.lastVisit = new Date();
-      await disconnectedUser.save();
-      logger.info(`🔥: ${socket.id} user just disconnected!`);
-      socket.broadcast.emit("user disconnected", getUsersOnline());
+      try {
+        global.globalUsers[username] = null;
+        const disconnectedUser = await Users.findOne({ username });
+        disconnectedUser.lastVisit = new Date();
+        await disconnectedUser.save();
+        logger.info(
+          `Socket] ${username} with socket id : ${socket.id}  just disconnected!`
+        );
+        socket.broadcast.emit("user disconnected", getUsersOnline());
+      } catch (e) {
+        logger.error(`[Socket] ${e?.message}`);
+      }
     });
   });
   return socketIO;

@@ -3,6 +3,8 @@ import Users from "../Models/Users.js";
 import { getData } from "../Utils/Paginator/paginator.js";
 import { createFilterQuery } from "../Utils/Filters/filters.js";
 import { changeKey } from "../Utils/CustomMethods/Objects.js";
+import { getSocketEvent } from "../Connection/SocketEvents/index.js";
+import { SocketEvent } from "../Connection/SocketEvents/eventTypes.js";
 
 class MessageController {
   async addMessage(req, res, next) {
@@ -16,9 +18,14 @@ class MessageController {
         to: toUser,
         from: req.username,
       }).save();
-      global.socketIO
-        .to(global.globalUsers[toUser])
-        .emit("private message", Message);
+      console.log("Hello");
+      getSocketEvent(SocketEvent.privateMessage, socketIO, {
+        toUser,
+        message: Message,
+      });
+      // global.socketIO
+      //   .to(global.globalUsers[toUser])
+      //   .emit("private message", Message);
       res.status(200).json({
         message: "Success",
         data: Message,
