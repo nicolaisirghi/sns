@@ -72,8 +72,6 @@ class VideoMeetingController {
           status: "SUCCESS",
           message,
         });
-      } else {
-        console.log("hello");
       }
     } catch (e) {
       next(e);

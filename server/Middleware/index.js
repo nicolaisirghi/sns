@@ -21,10 +21,6 @@ export const sessionMiddleware = session({
 
 app.use(morgan("dev"));
 
-// app.use(function (req, _, next) {
-//     req.io = socketIO;
-//     next();
-// })
 app.get("/", (_, res) => {
   const __filename = fileURLToPath(import.meta.url);
   const __dirname = dirname(__filename);
@@ -42,10 +38,6 @@ app.use(
   })
 );
 app.use(sessionMiddleware);
-// app.use(function (req, _, next) {
-//     req.user = "63e3f6889d700f51fe8531b7";
-//     console.log("User: ", req.user)
-//     next()
-// })
+
 app.use(router);
 app.use(errorHandler);
