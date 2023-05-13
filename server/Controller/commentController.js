@@ -76,16 +76,18 @@ class CommentController {
         throw new Error("Required fields : answer and anweredTo !");
 
       const commentCandidate = await PageComments.findById(answeredTo);
-      const answerCandidate = await PageAnswers.findById(replyTo);
-      if (!answerCandidate)
-        throw new Error(
-          "You can't reply to this answer, becuase it not found !"
-        );
+      if (replyTo) {
+        const answerCandidate = await PageAnswers.findById(replyTo);
+        if (!answerCandidate)
+          throw new Error(
+            "You can't reply to this answer, becuase it not found !"
+          );
+      }
       if (!commentCandidate) throw new Error("Comment not found ! ");
       const answerData = await new PageAnswers({
         user: req.username,
         answer,
-        replyTo,
+        ...(replyTo && { replyTo }),
       }).save();
       commentCandidate.answers.push(answerData._id);
       await commentCandidate.save();
