@@ -12,7 +12,7 @@ export const meetingEmit = (socket, args = {}) => {
 
   socket
     .to(globalUsers[toUserName])
-    .emit(SocketEvent.callTacker, { roomName, meteredMeeting });
+    .emit(SocketEvent.callTacker, { roomName, fromUserName: username });
 
   logger.info(
     `[Socket] Event callTacker sent to person with username : ${toUserName} and socket id : ${globalUsers[toUserName]}`

@@ -70,14 +70,22 @@ class CommentController {
   addAnswer = async function (req, res, next) {
     try {
       const { answerInfo } = req.body;
+      const { replyTo = null } = answerInfo;
       const { answer, answeredTo } = answerInfo;
       if (!answer || !answeredTo)
         throw new Error("Required fields : answer and anweredTo !");
+
       const commentCandidate = await PageComments.findById(answeredTo);
+      const answerCandidate = await PageAnswers.findById(replyTo);
+      if (!answerCandidate)
+        throw new Error(
+          "You can't reply to this answer, becuase it not found !"
+        );
       if (!commentCandidate) throw new Error("Comment not found ! ");
       const answerData = await new PageAnswers({
         user: req.username,
         answer,
+        replyTo,
       }).save();
       commentCandidate.answers.push(answerData._id);
       await commentCandidate.save();

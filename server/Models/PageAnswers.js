@@ -11,7 +11,10 @@ const pageAnswersSchema = new Schema(
       type: String,
       required: true,
     },
-
+    replyTo: {
+      type: Schema.Types.ObjectId,
+      required: false,
+    },
     time: {
       type: Date,
       default: new Date(),
