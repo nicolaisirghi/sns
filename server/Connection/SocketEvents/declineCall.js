@@ -8,11 +8,10 @@ export const declinedCall = (socket, args) => {
         data: { toUserName = null, isDeclined = true },
       },
     ] = args;
-    console.log("To username : ", toUserName);
-    console.log("GlobalUsers : ", globalUsers[toUserName]);
+
     socket
       .to(globalUsers[toUserName])
-      .emit(SocketEvent.declinedCall, { isDeclined });
+      .emit(SocketEvent.responseDeclinedCall, { isDeclined });
   } catch (e) {
     logger.error(`[Socket] ${e.message}`);
   }

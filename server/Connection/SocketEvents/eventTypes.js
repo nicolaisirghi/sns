@@ -7,4 +7,5 @@ export const SocketEvent = {
   connection: "connection",
   userConnected: "user connected",
   declinedCall: "declinedCall",
+  responseDeclinedCall: "responseDeclinedCall",
 };
