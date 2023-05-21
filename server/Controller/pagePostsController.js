@@ -27,12 +27,12 @@ class PagePostsController {
 
   async getFollowersPosts(req, res, next) {
     try {
-      const user = req.user;
+      const user = req.username;
       const page = req.query.page || 1;
       const itemsCount = req.query.itemsCount || 5;
       const { followers } = await Followers.findOne({ user });
       const followersUsername = await Promise.all(
-        followers?.map((follower) => Users.findById(follower))
+        followers?.map((follower) => Users.findOne({ username: follower }))
       );
 
       const [followersPublications] = await Promise.all(

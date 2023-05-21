@@ -1,17 +1,19 @@
 import Users from "../Models/Users.js";
 import Followers from "../Models/Followers.js";
 import { NotificationServiceInstance as NotificationService } from "../Services/notificationService.js";
+import Friends from "../Models/Friends.js";
 
 class FollowerController {
   async getFollowedByMe(req, res, next) {
     try {
-      const user = req.user;
-      const { followPeople } = await Followers.findOne({ user });
+      const user = req.username;
+      const followers = await Followers.findOne({ user });
+      const { followPeople } = followers;
       if (!followPeople || !followPeople.length)
         throw new Error("You haven t followers ");
       const followersInfo = await Promise.all(
         followPeople.map((follower) =>
-          Users.findById(follower, { _id: 0, password: 0 })
+          Users.findOne({ username: follower }, { _id: 0, password: 0 })
         )
       );
       res.status(200).json({
@@ -25,13 +27,13 @@ class FollowerController {
 
   async getFollowers(req, res, next) {
     try {
-      const user = req.user;
+      const user = req.username;
       const { followers } = await Followers.findOne({ user });
       if (!followers || !followers.length)
         throw new Error("You haven t followers ");
       const followersInfo = await Promise.all(
         followers.map((follower) =>
-          Users.findById(follower, { _id: 0, password: 0 })
+          Users.find({ username: follower }, { _id: 0, password: 0 })
         )
       );
       res.status(200).json({
@@ -45,13 +47,13 @@ class FollowerController {
 
   async followUser(req, res, next) {
     try {
-      const user = req.user;
+      const user = req.username;
       const { followingUser } = req.body;
       if (!followingUser)
         throw new Error("You need to select who you want to follow");
       const [userCandidate, currentUser] = await Promise.all([
         Followers.findOne({ user }),
-        Users.findById(user),
+        Users.find({ username: user }),
       ]);
       let data;
       if (!userCandidate) {
@@ -81,12 +83,11 @@ class FollowerController {
 
   async unFollowUser(req, res, next) {
     try {
-      const user = req.user;
+      const user = req.username;
       const { unFollowingUser } = req.body;
       if (!unFollowingUser)
         throw new Error("You need to select who you want to unfollow!");
       const { followPeople } = await Followers.findOne({ user });
-      console.log("Follow people : ", followPeople);
       if (!followPeople || !followPeople.includes(unFollowingUser))
         throw new Error("You didn't follow this person !");
       await Followers.updateOne(
