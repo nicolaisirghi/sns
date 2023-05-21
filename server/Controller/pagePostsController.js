@@ -30,7 +30,9 @@ class PagePostsController {
       const user = req.username;
       const page = req.query.page || 1;
       const itemsCount = req.query.itemsCount || 5;
-      const { followers } = await Followers.findOne({ user });
+      const followersInfo = await Followers.findOne({ user });
+      if (!followersInfo) throw new Error("You haven't followers");
+      const { followers } = followersInfo;
       const followersUsername = await Promise.all(
         followers?.map((follower) => Users.findOne({ username: follower }))
       );

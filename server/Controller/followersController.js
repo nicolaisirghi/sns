@@ -28,7 +28,10 @@ class FollowerController {
   async getFollowers(req, res, next) {
     try {
       const user = req.username;
-      const { followers } = await Followers.findOne({ user });
+      const followersData = await Followers.findOne({ user });
+      if (!followersData) throw new Error("You haven't followers");
+
+      const { followers } = followersData;
       if (!followers || !followers.length)
         throw new Error("You haven t followers ");
       const followersInfo = await Promise.all(
@@ -87,7 +90,7 @@ class FollowerController {
       const { unFollowingUser } = req.body;
       if (!unFollowingUser)
         throw new Error("You need to select who you want to unfollow!");
-      const { followPeople } = await Followers.findOne({ user });
+      const { followPeople = null } = await Followers.findOne({ user });
       if (!followPeople || !followPeople.includes(unFollowingUser))
         throw new Error("You didn't follow this person !");
       await Followers.updateOne(
