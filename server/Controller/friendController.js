@@ -2,6 +2,7 @@ import Friends from "../Models/Friends.js";
 import Users from "../Models/Users.js";
 import { NotificationServiceInstance as NotificationService } from "../Services/notificationService.js";
 import RequestedFriends from "../Models/RequestedFriends.js";
+import Followers from "../Models/Followers.js";
 
 class FriendController {
   async getFriends(req, res, next) {
@@ -116,6 +117,18 @@ class FriendController {
         await currentUserFriends.save();
         requestedUserFriends.friends.push(user);
         await requestedUserFriends.save();
+      }
+      const [userFollowers, friendFollowers] = await Promise.all([
+        Followers.findOne({ user }),
+        Followers.findOne({ user: newFriend }),
+      ]);
+      if (!userFollowers.followers.includes(newFriend)) {
+        userFollowers.followers.push(newFriend);
+        userFollowers.save();
+      }
+      if (!friendFollowers.followers.includes(user)) {
+        friendFollowers.followers.push(newFriend);
+        friendFollowers.save();
       }
       res.status(200).json({
         status: "SUCCESS",
