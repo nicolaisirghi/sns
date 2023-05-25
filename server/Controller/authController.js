@@ -80,7 +80,6 @@ class AuthController {
       );
       await new MailsModel({ user: userData.user.id, link: accessLink }).save();
       req.session.refreshToken = userData.refreshToken;
-
       return res.json(userData);
     } catch (e) {
       next(e);

@@ -136,6 +136,20 @@ class PublicationsController {
       next(e);
     }
   };
+
+  checkIsLikedByMe = async function (req, res, next) {
+    try {
+      const { isLikedByUser } = await checkLikes(req);
+      console.log("Is liked by user : ", isLikedByUser);
+      const isLiked = !!isLikedByUser;
+      return res.status(200).json({
+        statusCode: 200,
+        isLiked,
+      });
+    } catch (e) {
+      next(e);
+    }
+  };
 }
 
 export const PublicationsControllerInstance = new PublicationsController();

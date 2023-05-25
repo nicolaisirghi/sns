@@ -16,5 +16,6 @@ router.delete("/removeLike", accessMiddleware, controller.removeLike);
 router.get("/byAuthor", controller.getPublicationsByAuthor);
 router.get("/getByID", controller.getSinglePublication);
 router.get("/getByFilter", controller.getPublicationsByFilter);
+router.get("/checkIsLiked", accessMiddleware, controller.checkIsLikedByMe);
 router.get("/:category/", controller.getPublications);
 export default router;
