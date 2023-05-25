@@ -65,9 +65,9 @@ export const checkLikes = async (req, user) => {
     ]);
   const publication =
     simplePublication ?? pagePublication ?? pageComment ?? pageAnswer;
-  console.log("Publication : ", publication);
   if (!publication)
     throw new Error("You need to select a publication to add like!");
+
   const isLikedByUser = publication.likes.find(
     (candidate) => candidate.user === user
   );

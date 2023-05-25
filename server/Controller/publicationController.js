@@ -55,7 +55,7 @@ class PublicationsController {
 
   addLike = async function (req, res, next) {
     try {
-      const user = req.user;
+      const user = req.username;
       const { isLikedByUser, publication } = await checkLikes(
         req.body,
         req.username
@@ -74,7 +74,7 @@ class PublicationsController {
 
   removeLike = async function (req, res, next) {
     try {
-      const user = req.user;
+      const user = req.username;
       const { isLikedByUser, publication } = await checkLikes(
         req.body,
         req.username
