@@ -55,8 +55,7 @@ export const getPublicationData = async (req) => {
 
 export const checkLikes = async (req) => {
   const user = req.username;
-  const { postID } = req.query;
-  console.log("Post id", postID);
+  const postID = req.query.postID ?? req.body.postID;
   const [simplePublication, pagePublication, pageComment, pageAnswer] =
     await Promise.all([
       Publications.findById(postID),
