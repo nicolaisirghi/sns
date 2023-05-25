@@ -56,7 +56,10 @@ class PublicationsController {
   addLike = async function (req, res, next) {
     try {
       const user = req.user;
-      const { isLikedByUser, publication } = await checkLikes(req);
+      const { isLikedByUser, publication } = await checkLikes(
+        req.body,
+        req.username
+      );
       if (isLikedByUser) throw new Error("You already have liked this post !");
       publication.likes.push({
         user,
@@ -72,7 +75,10 @@ class PublicationsController {
   removeLike = async function (req, res, next) {
     try {
       const user = req.user;
-      const { isLikedByUser, publication } = await checkLikes(req);
+      const { isLikedByUser, publication } = await checkLikes(
+        req.body,
+        req.username
+      );
       if (!isLikedByUser) throw new Error("You  haven't  liked this post !");
 
       await publication.likes.pull({ user });
@@ -139,8 +145,7 @@ class PublicationsController {
 
   checkIsLikedByMe = async function (req, res, next) {
     try {
-      const { isLikedByUser } = await checkLikes(req);
-      console.log("Is liked by user : ", isLikedByUser);
+      const { isLikedByUser } = await checkLikes(req.query, req.username);
       const isLiked = !!isLikedByUser;
       return res.status(200).json({
         statusCode: 200,

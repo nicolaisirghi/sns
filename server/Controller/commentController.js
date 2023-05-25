@@ -54,7 +54,10 @@ class CommentController {
 
   addLike = async function (req, res, next) {
     try {
-      const { isLikedByUser, publication } = await checkLikes(req);
+      const { isLikedByUser, publication } = await checkLikes(
+        req.body,
+        req.username
+      );
       if (isLikedByUser) throw new Error("You already have liked this post !");
       publication.likes.push({ user: req.username });
       await publication.save();
