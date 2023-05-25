@@ -55,7 +55,7 @@ export const getPublicationData = async (req) => {
 
 export const checkLikes = async (req) => {
   const user = req.username;
-  const { postID } = req.body;
+  const { postID } = req.query;
   console.log("Post id", postID);
   const [simplePublication, pagePublication, pageComment, pageAnswer] =
     await Promise.all([
@@ -66,7 +66,6 @@ export const checkLikes = async (req) => {
     ]);
   const publication =
     simplePublication ?? pagePublication ?? pageComment ?? pageAnswer;
-  console.log("Publication : ", publication);
   if (!publication)
     throw new Error("You need to select a publication to add like!");
   console.log("User : ", user);
