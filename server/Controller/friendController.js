@@ -171,6 +171,26 @@ class FriendController {
       next(e);
     }
   }
+  async checkFriend(req, res, next) {
+    try {
+      const { friendUserName } = req.query;
+      const currentUser = req.username;
+      const data = await Friends.findOne(
+        { user: currentUser },
+        { _id: 0, user: 0 }
+      );
+      if (!data) throw new Error("You haven't friends");
+      const { friends } = data;
+
+      const isFriend = friends.includes(friendUserName);
+      return res.status(200).json({
+        statusCode: 200,
+        isFriend,
+      });
+    } catch (e) {
+      next(e);
+    }
+  }
 }
 
 export const FriendControllerInstance = new FriendController();

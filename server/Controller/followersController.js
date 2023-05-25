@@ -107,6 +107,25 @@ class FollowerController {
       next(e);
     }
   }
+
+  async checkFollower(req, res, next) {
+    try {
+      const { followerUserName } = req.query;
+      const user = req.username;
+      const followersData = await Followers.findOne({ user });
+      if (!followersData) throw new Error("You haven't followers");
+
+      const { followers } = followersData;
+
+      const isFollower = followers.includes(followerUserName);
+      res.status(200).json({
+        statusCode: 200,
+        isFollower,
+      });
+    } catch (e) {
+      next(e);
+    }
+  }
 }
 
 export const FollowerControllerInstance = new FollowerController();

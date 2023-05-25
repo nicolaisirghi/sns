@@ -6,4 +6,5 @@ router.get("/", controller.getFriends);
 router.post("/request", controller.requestFriend);
 router.post("/add", controller.addFriend);
 router.delete("/remove", controller.removeFriend);
+router.get("/checkFriend", controller.checkFriend);
 export default router;
