@@ -32,16 +32,28 @@ class PostsController {
 
   addQuestion = async function (req, res, next) {
     try {
-      const questionDocument = { ...req.body.questionInfo, date: new Date() };
+      const user = req.user;
+      const questionDocument = {
+        ...req.body.questionInfo,
+        date: new Date(),
+        user,
+      };
       const category = req.params.category;
       const questionFromCollection = await Questions.findOne({
         question: questionDocument.question,
       });
       if (!questionFromCollection) {
-        await new Questions({ ...questionDocument, category }).save();
+        const newQuestion = await new Questions({
+          ...questionDocument,
+          category,
+        }).save();
         const newComments = await getComments(category);
         global.socketIO.emit("new question", newComments);
-        res.status(200).send("Question added with success!");
+        res.status(200).json({
+          statusCode: 200,
+          message: "Question added with success!",
+          data: newQuestion,
+        });
       } else {
         throw new Error("This question is already asked!");
       }
@@ -52,20 +64,21 @@ class PostsController {
 
   addAnswer = async function (req, res, next) {
     try {
+      const user = req.username;
       const { answerInfo } = req.body;
       const questionCandidate = await Questions.findOne({
         _id: answerInfo.answeredTo,
       });
       if (questionCandidate) {
-        const answerDocument = { ...answerInfo, date: new Date() };
-        await new Answers(answerDocument).save();
+        const answerDocument = { ...answerInfo, date: new Date(), user };
+        const newAnswer = await new Answers(answerDocument).save();
         const newComments = await getComments(questionCandidate.category);
         global.socketIO.emit("new answer", newComments);
-        res
-          .status(200)
-          .send(
-            `Answered to question ${questionCandidate.question} with success!`
-          );
+        res.status(200).json({
+          statusCode: 200,
+          message: `Answered to question ${questionCandidate.question} with success!`,
+          data: newAnswer,
+        });
       } else {
         throw new Error("Question not found");
       }
