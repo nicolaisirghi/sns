@@ -32,7 +32,7 @@ class PostsController {
 
   addQuestion = async function (req, res, next) {
     try {
-      const user = req.user;
+      const user = req.username;
       const questionDocument = {
         ...req.body.questionInfo,
         date: new Date(),
@@ -196,6 +196,7 @@ class PostsController {
       if (!title) throw new Error("Title not found in your request ! ");
       const question = title.replace(/_/g, " ").trim();
       const questionCandidate = await Questions.findOne({ question });
+      console.log("QUestion Candidate : ", questionCandidate);
       if (!questionCandidate) throw new Error("The question didn't exist ");
       const responeInfo = await Answers.find({
         answeredTo: questionCandidate._id,

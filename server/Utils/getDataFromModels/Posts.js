@@ -8,7 +8,7 @@ export const getComments = async (category, page = 1, itemsCount = 5) => {
   const [answers, users, allUsers] = await Promise.all([
     Answers.find({ answeredTo: { $in: questionIds } }),
     Users.find(
-      { _id: { $in: questions.map((question) => question.user) } },
+      { username: { $in: questions.map((question) => question.user) } },
       { email: 0, password: 0 }
     ),
     Users.find({}, { email: 0, password: 0 }),
@@ -19,7 +19,7 @@ export const getComments = async (category, page = 1, itemsCount = 5) => {
       return answer.answeredTo.toString() === question._id.toString();
     });
     const userInfo = users.find(
-      (user) => user._id.toString() === question.user.toString()
+      (user) => user.username.toString() === question.user.toString()
     );
     return {
       questionInfo: question,
@@ -42,7 +42,7 @@ export const getComments = async (category, page = 1, itemsCount = 5) => {
         comment.answerInfo,
         comment.answerInfo.map((answer) => {
           const userAnswered = allUsers.find((user) => {
-            return user._id.toString() === answer.user.toString();
+            return user.username.toString() === answer.user.toString();
           });
           return Object.assign(answer, { user: userAnswered });
         })
