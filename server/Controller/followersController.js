@@ -56,7 +56,7 @@ class FollowerController {
         throw new Error("You need to select who you want to follow");
       const [userCandidate, currentUser] = await Promise.all([
         Followers.findOne({ user }),
-        Users.find({ username: user }),
+        Users.findOne({ username: user }),
       ]);
       let data;
       if (!userCandidate) {

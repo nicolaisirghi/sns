@@ -52,9 +52,10 @@ class NotificationService {
   }
 
   async createNotification(notification) {
+    console.log("Notification 1 : ", notification);
+
     const { notificationInfo, message } =
       this.getNotificationMessage(notification);
-    console.log("Notification : ", notification);
     console.log("Notification Info", notificationInfo);
 
     const notificationData = await Promise.all(
