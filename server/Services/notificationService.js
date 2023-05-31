@@ -54,6 +54,9 @@ class NotificationService {
   async createNotification(notification) {
     const { notificationInfo, message } =
       this.getNotificationMessage(notification);
+    console.log("Notification : ", notification);
+    console.log("Notification Info", notificationInfo);
+
     const notificationData = await Promise.all(
       notification?.toUsers?.map((user) => {
         return new Notifications({

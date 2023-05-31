@@ -7,7 +7,7 @@ import { getData } from "../Utils/Paginator/paginator.js";
 class NotificationController {
   async getNotifications(req, res, next) {
     try {
-      const currentUser = req.user;
+      const currentUser = req.username;
       const type = req.query.type?.toLowerCase();
       const page = req.query.page || 1;
       const itemsCount = req.query.itemsCount || 5;
@@ -19,11 +19,14 @@ class NotificationController {
       } else {
         throw new Error("Invalid type for notifications!");
       }
-      const userInfo = await Users.findById(currentUser, {
-        username: 1,
-        photoURL: 1,
-        name: 1,
-      });
+      const userInfo = await Users.findOne(
+        { username: currentUser },
+        {
+          username: 1,
+          photoURL: 1,
+          name: 1,
+        }
+      );
       notifications = notifications.map((notification) =>
         Object.assign(notification, { user: userInfo })
       );

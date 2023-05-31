@@ -38,7 +38,6 @@ class PagePostsController {
         followPeople?.map((follower) => Users.findOne({ username: follower }))
       );
 
-      console.log("Followers username : ", followersUsername);
       const [followersPublications] = await Promise.all(
         followersUsername?.map(({ username }) => {
           return PagePublications.find({ author: username });
