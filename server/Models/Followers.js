@@ -6,18 +6,15 @@ const followerSchema = new Schema(
     user: {
       type: String,
       required: true,
-      unique: true,
     },
     followers: [
       {
         type: String,
-        unique: true,
       },
     ],
     followPeople: [
       {
         type: String,
-        unique: true,
       },
     ],
   },

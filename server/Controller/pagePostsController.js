@@ -32,17 +32,19 @@ class PagePostsController {
       const itemsCount = req.query.itemsCount || 5;
       const followersInfo = await Followers.findOne({ user });
       if (!followersInfo) throw new Error("You haven't followers");
-      const { followers } = followersInfo;
+
+      const { followPeople } = followersInfo;
       const followersUsername = await Promise.all(
-        followers?.map((follower) => Users.findOne({ username: follower }))
+        followPeople?.map((follower) => Users.findOne({ username: follower }))
       );
 
+      console.log("Followers username : ", followersUsername);
       const [followersPublications] = await Promise.all(
-        followersUsername?.map(({ username }) =>
-          PagePublications.find({ author: username })
-        )
+        followersUsername?.map(({ username }) => {
+          return PagePublications.find({ author: username });
+        })
       );
-      followersPublications.sort((a, b) => a.time - b.time);
+      followersPublications?.sort((a, b) => a.time - b.time);
       const publications = getData(followersPublications, page, itemsCount);
       res.status(200).send(publications);
     } catch (e) {
