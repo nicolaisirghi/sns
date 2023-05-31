@@ -27,9 +27,11 @@ class NotificationController {
           name: 1,
         }
       );
-      notifications = notifications.map((notification) =>
-        Object.assign(notification, { user: userInfo })
-      );
+      notifications = notifications.map((notification) => ({
+        notification,
+        user: { ...userInfo.toObject() },
+      }));
+      console.log("Notifications : ", notifications);
       const notificationsData = getData(notifications, page, itemsCount);
       res.status(200).json({
         status: "SUCCESS",
