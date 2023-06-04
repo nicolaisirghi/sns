@@ -88,14 +88,11 @@ class AuthController {
 
   async getUserInfo(req, res, next) {
     try {
-      const user = req.query.user ?? req.user;
-      const userCandidate = !isValidObjectID(user)
-        ? await Users.findOne({ username: user }, { _id: 1 })
-        : user;
+      const user = req.query.username ?? req.username;
 
       const [userInfo, followersInfo] = await Promise.all([
-        Users.findById(userCandidate, { _id: 0, password: 0 }),
-        Followers.findOne({ user: userCandidate }, { _id: 0, password: 0 }),
+        Users.findOne({ username: user }, { _id: 0, password: 0 }),
+        Followers.findOne({ user }, { _id: 0, password: 0 }),
       ]);
 
       if (!userInfo) throw new Error("Not user!");
