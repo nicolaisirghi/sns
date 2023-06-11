@@ -26,30 +26,30 @@ class PagePostsController {
   }
 
   async getFollowersPosts(req, res, next) {
-    // try {
-    const user = req.username;
-    const page = req.query.page || 1;
-    const itemsCount = req.query.itemsCount || 5;
-    const followersInfo = await Followers.findOne({ user });
-    if (!followersInfo) throw new Error("You haven't followers");
+    try {
+      const user = req.username;
+      const page = req.query.page || 1;
+      const itemsCount = req.query.itemsCount || 5;
+      const followersInfo = await Followers.findOne({ user });
+      if (!followersInfo) throw new Error("You haven't followers");
 
-    const { followPeople } = followersInfo;
-    const followersUsername = await Promise.all(
-      followPeople?.map((follower) => Users.findOne({ username: follower }))
-    );
+      const { followPeople } = followersInfo;
+      const followersUsername = await Promise.all(
+        followPeople?.map((follower) => Users.findOne({ username: follower }))
+      );
 
-    const [followersPublications] = await Promise.all(
-      followersUsername?.map((data) => {
-        console.log("Data username : ", data.username);
-        return PagePublications.find({ author: data.username });
-      })
-    );
-    followersPublications?.sort((a, b) => a.time - b.time);
-    const publications = getData(followersPublications, page, itemsCount);
-    res.status(200).send(publications);
-    // } catch (e) {
-    //   next(e);
-    // }
+      const [followersPublications] = await Promise.all(
+        followersUsername?.map((data) => {
+          console.log("Data username : ", data.username);
+          return PagePublications.find({ author: data.username });
+        })
+      );
+      followersPublications?.sort((a, b) => a.time - b.time);
+      const publications = getData(followersPublications, page, itemsCount);
+      res.status(200).send(publications);
+    } catch (e) {
+      next(e);
+    }
   }
 
   async addPost(req, res, next) {
