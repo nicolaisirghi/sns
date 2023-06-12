@@ -18,14 +18,10 @@ class MessageController {
         to: toUser,
         from: req.username,
       }).save();
-      console.log("Hello");
       getSocketEvent(SocketEvent.privateMessage, socketIO, {
         toUser,
         message: Message,
       });
-      // global.socketIO
-      //   .to(global.globalUsers[toUser])
-      //   .emit("private message", Message);
       res.status(200).json({
         message: "Success",
         data: Message,

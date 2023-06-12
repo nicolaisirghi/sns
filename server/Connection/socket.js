@@ -20,8 +20,6 @@ export const createSocketConnection = (server) => {
   });
 
   socketIO.on(SocketEvent.connection, (socket) => {
-    // need to be fixes
-    // global.socket = socket;
     const { username = "maimuta" } = socket.handshake.query;
     global.globalUsers[username] = socket.id;
 
