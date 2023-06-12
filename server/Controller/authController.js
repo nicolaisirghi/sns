@@ -72,14 +72,6 @@ class AuthController {
     try {
       const { registrationData } = req.body;
       const userData = await authService.registration(registrationData);
-      // const accessLink = uuid();
-      // const verificationURL = `${process.env.API_URL}/verification/${accessLink}`;
-      // await mailService.sendActivationMail(
-      //   userData.user.email,
-      //   verificationURL
-      // );
-      // await new MailsModel({ user: userData.user.id, link: accessLink }).save();
-      req.session.refreshToken = userData.refreshToken;
       return res.json(userData);
     } catch (e) {
       next(e);

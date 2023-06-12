@@ -17,7 +17,6 @@ const start = async () => {
       useUnifiedTopology: true,
     });
     logger.info("[Mongo] Connected to mongo ");
-    // global.usersOnline = await checkUsersOnline();
     await createGlobalVariables();
     global.socketIO = createSocketConnection(server);
   } catch (e) {

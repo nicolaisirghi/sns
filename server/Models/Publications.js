@@ -32,6 +32,7 @@ const publicationSchema = new Schema(
     },
     time: {
       type: Date,
+      default: new Date(),
       required: true,
     },
     author: {
